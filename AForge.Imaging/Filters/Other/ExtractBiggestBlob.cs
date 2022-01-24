@@ -71,10 +71,10 @@ namespace AForge.Imaging.Filters
         {
             get
             {
-                Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+                Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
                 // initialize format translation dictionary
-                if ( originalImage == null )
+                if (originalImage == null)
                 {
                     formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
                     formatTranslations[PixelFormat.Format24bppRgb]    = PixelFormat.Format24bppRgb;
@@ -122,24 +122,24 @@ namespace AForge.Imaging.Filters
         /// <exception cref="InvalidImagePropertiesException">Source and original images must have the same size.</exception>
         /// <exception cref="ArgumentException">The source image does not contain any blobs.</exception>
         ///
-        public Bitmap Apply( Bitmap image )
+        public Bitmap Apply(Bitmap image)
         {
             // lock source bitmap data
             BitmapData srcData = image.LockBits(
-                new Rectangle( 0, 0, image.Width, image.Height ),
-                ImageLockMode.ReadOnly, image.PixelFormat );
+                new Rectangle(0, 0, image.Width, image.Height),
+                ImageLockMode.ReadOnly, image.PixelFormat);
 
             Bitmap dstImage = null;
 
             try
             {
                 // apply the filter
-                dstImage = Apply( srcData );
+                dstImage = Apply(srcData);
             }
             finally
             {
                 // unlock source image
-                image.UnlockBits( srcData );
+                image.UnlockBits(srcData);
             }
 
             return dstImage;
@@ -158,25 +158,25 @@ namespace AForge.Imaging.Filters
         /// <exception cref="InvalidImagePropertiesException">Source and original images must have the same size.</exception>
         /// <exception cref="ArgumentException">The source image does not contain any blobs.</exception>
         ///
-        public Bitmap Apply( BitmapData imageData )
+        public Bitmap Apply(BitmapData imageData)
         {
             // check pixel format of the source image
-            if ( !FormatTranslations.ContainsKey( imageData.PixelFormat ) )
-                throw new UnsupportedImageFormatException( "Source pixel format is not supported by the filter." );
+            if (!FormatTranslations.ContainsKey(imageData.PixelFormat))
+                throw new UnsupportedImageFormatException("Source pixel format is not supported by the filter.");
 
             // locate blobs in the source image
-            BlobCounter blobCounter = new BlobCounter( imageData );
+            BlobCounter blobCounter = new BlobCounter(imageData);
             // get information about blobs
-            Blob[] blobs = blobCounter.GetObjectsInformation( );
+            Blob[] blobs = blobCounter.GetObjectsInformation();
             // find the biggest blob
-            int  maxSize = 0;
+            int maxSize = 0;
             Blob biggestBlob = null;
 
-            for ( int i = 0, n = blobs.Length; i < n; i++ )
+            for (int i = 0, n = blobs.Length; i < n; i++)
             {
                 int size = blobs[i].Rectangle.Width * blobs[i].Rectangle.Height;
 
-                if ( size > maxSize )
+                if (size > maxSize)
                 {
                     maxSize = size;
                     biggestBlob = blobs[i];
@@ -184,45 +184,45 @@ namespace AForge.Imaging.Filters
             }
 
             // check if any blob was found
-            if ( biggestBlob == null )
+            if (biggestBlob == null)
             {
-                throw new ArgumentException( "The source image does not contain any blobs." );
+                throw new ArgumentException("The source image does not contain any blobs.");
             }
 
-            blobPosition = new IntPoint( biggestBlob.Rectangle.Left, biggestBlob.Rectangle.Top );
+            blobPosition = new IntPoint(biggestBlob.Rectangle.Left, biggestBlob.Rectangle.Top);
 
             // extract biggest blob's image
-            if ( originalImage == null )
+            if (originalImage == null)
             {
-                blobCounter.ExtractBlobsImage( new UnmanagedImage( imageData ), biggestBlob, false );
+                blobCounter.ExtractBlobsImage(new UnmanagedImage(imageData), biggestBlob, false);
             }
             else
             {
                 // check original image's format
                 if (
-                    ( originalImage.PixelFormat != PixelFormat.Format24bppRgb ) &&
-                    ( originalImage.PixelFormat != PixelFormat.Format32bppArgb ) &&
-                    ( originalImage.PixelFormat != PixelFormat.Format32bppRgb ) &&
-                    ( originalImage.PixelFormat != PixelFormat.Format32bppPArgb ) &&
-                    ( originalImage.PixelFormat != PixelFormat.Format8bppIndexed )
+                    (originalImage.PixelFormat != PixelFormat.Format24bppRgb) &&
+                    (originalImage.PixelFormat != PixelFormat.Format32bppArgb) &&
+                    (originalImage.PixelFormat != PixelFormat.Format32bppRgb) &&
+                    (originalImage.PixelFormat != PixelFormat.Format32bppPArgb) &&
+                    (originalImage.PixelFormat != PixelFormat.Format8bppIndexed)
                     )
                 {
-                    throw new UnsupportedImageFormatException( "Original image may be grayscale (8bpp indexed) or color (24/32bpp) image only." );
+                    throw new UnsupportedImageFormatException("Original image may be grayscale (8bpp indexed) or color (24/32bpp) image only.");
                 }
 
                 // check its size
-                if ( ( originalImage.Width != imageData.Width ) || ( originalImage.Height != imageData.Height ) )
+                if ((originalImage.Width != imageData.Width) || (originalImage.Height != imageData.Height))
                 {
-                    throw new InvalidImagePropertiesException( "Original image must have the same size as passed source image." );
+                    throw new InvalidImagePropertiesException("Original image must have the same size as passed source image.");
                 }
 
-                blobCounter.ExtractBlobsImage( originalImage, biggestBlob, false );
+                blobCounter.ExtractBlobsImage(originalImage, biggestBlob, false);
             }
 
-            Bitmap managedImage = biggestBlob.Image.ToManagedImage( );
+            Bitmap managedImage = biggestBlob.Image.ToManagedImage();
 
             // dispose unmanaged image of the biggest blob
-            biggestBlob.Image.Dispose( );
+            biggestBlob.Image.Dispose();
 
             return managedImage;
         }
@@ -238,9 +238,9 @@ namespace AForge.Imaging.Filters
         /// 
         /// <exception cref="NotImplementedException">The method is not implemented.</exception>
         /// 
-        public UnmanagedImage Apply( UnmanagedImage image )
+        public UnmanagedImage Apply(UnmanagedImage image)
         {
-            throw new NotImplementedException( "The method is not implemented for the filter." );
+            throw new NotImplementedException("The method is not implemented for the filter.");
         }
 
         /// <summary>
@@ -252,9 +252,9 @@ namespace AForge.Imaging.Filters
         /// 
         /// <exception cref="NotImplementedException">The method is not implemented.</exception>
         /// 
-        public void Apply( UnmanagedImage sourceImage, UnmanagedImage destinationImage )
+        public void Apply(UnmanagedImage sourceImage, UnmanagedImage destinationImage)
         {
-            throw new NotImplementedException( "The method is not implemented filter." );
+            throw new NotImplementedException("The method is not implemented filter.");
         }
     }
 }

@@ -8,12 +8,11 @@
 
 namespace AForge.Imaging.Filters
 {
+    using AForge;
     using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
-
-    using AForge;
 
     /// <summary>
     /// Performs quadrilateral transformation using nearest neighbor algorithm for interpolation.
@@ -24,7 +23,7 @@ namespace AForge.Imaging.Filters
     /// 
     /// <seealso cref="SimpleQuadrilateralTransformation"/>
     ///
-    [Obsolete( "The class is deprecated and SimpleQuadrilateralTransformation should be used instead" )]
+    [Obsolete("The class is deprecated and SimpleQuadrilateralTransformation should be used instead")]
     public class QuadrilateralTransformationNearestNeighbor : BaseTransformationFilter
     {
         private SimpleQuadrilateralTransformation baseFilter = null;
@@ -53,7 +52,7 @@ namespace AForge.Imaging.Filters
         public bool AutomaticSizeCalculaton
         {
             get { return baseFilter.AutomaticSizeCalculaton; }
-            set { baseFilter.AutomaticSizeCalculaton = value;  }
+            set { baseFilter.AutomaticSizeCalculaton = value; }
         }
 
         /// <summary>
@@ -118,9 +117,9 @@ namespace AForge.Imaging.Filters
         /// <see langword="false"/>, which means that destination image will have width and
         /// height as specified by user.</para></remarks>
         /// 
-        public QuadrilateralTransformationNearestNeighbor( List<IntPoint> sourceCorners, int newWidth, int newHeight )
-		{
-            baseFilter = new SimpleQuadrilateralTransformation( sourceCorners, newWidth, newHeight );
+        public QuadrilateralTransformationNearestNeighbor(List<IntPoint> sourceCorners, int newWidth, int newHeight)
+        {
+            baseFilter = new SimpleQuadrilateralTransformation(sourceCorners, newWidth, newHeight);
             baseFilter.UseInterpolation = false;
         }
 
@@ -134,9 +133,9 @@ namespace AForge.Imaging.Filters
         /// <see langword="true"/>, which means that destination image will have width and
         /// height automatically calculated based on <see cref="SourceCorners"/> property.</para></remarks>
         ///
-        public QuadrilateralTransformationNearestNeighbor( List<IntPoint> sourceCorners ) 
+        public QuadrilateralTransformationNearestNeighbor(List<IntPoint> sourceCorners)
         {
-            baseFilter = new SimpleQuadrilateralTransformation( sourceCorners );
+            baseFilter = new SimpleQuadrilateralTransformation(sourceCorners);
             baseFilter.UseInterpolation = false;
         }
 
@@ -147,9 +146,9 @@ namespace AForge.Imaging.Filters
         /// <param name="sourceData">Source image data.</param>
         /// <param name="destinationData">Destination image data.</param>
         /// 
-        protected override unsafe void ProcessFilter( UnmanagedImage sourceData, UnmanagedImage destinationData )
+        protected override unsafe void ProcessFilter(UnmanagedImage sourceData, UnmanagedImage destinationData)
         {
-            baseFilter.Apply( sourceData, destinationData );
+            baseFilter.Apply(sourceData, destinationData);
         }
 
         /// <summary>
@@ -162,21 +161,21 @@ namespace AForge.Imaging.Filters
         /// 
         /// <exception cref="ArgumentException">The specified quadrilateral's corners are outside of the given image.</exception>
         /// 
-        protected override System.Drawing.Size CalculateNewImageSize( UnmanagedImage sourceData )
+        protected override System.Drawing.Size CalculateNewImageSize(UnmanagedImage sourceData)
         {
             // perform checking of source corners - they must feet into the image
-            foreach ( IntPoint point in baseFilter.SourceQuadrilateral )
+            foreach (IntPoint point in baseFilter.SourceQuadrilateral)
             {
-                if ( ( point.X < 0 ) ||
-                     ( point.Y < 0 ) ||
-                     ( point.X >= sourceData.Width ) ||
-                     ( point.Y >= sourceData.Height ) )
+                if ((point.X < 0) ||
+                     (point.Y < 0) ||
+                     (point.X >= sourceData.Width) ||
+                     (point.Y >= sourceData.Height))
                 {
-                    throw new ArgumentException( "The specified quadrilateral's corners are outside of the given image." );
+                    throw new ArgumentException("The specified quadrilateral's corners are outside of the given image.");
                 }
             }
 
-            return new Size( baseFilter.NewWidth, baseFilter.NewHeight );
+            return new Size(baseFilter.NewWidth, baseFilter.NewHeight);
         }
     }
 }

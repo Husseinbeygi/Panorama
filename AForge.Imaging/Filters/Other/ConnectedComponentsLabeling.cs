@@ -8,7 +8,6 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
@@ -44,22 +43,22 @@ namespace AForge.Imaging.Filters
     {
         // Color table for coloring objects
         private static Color[] colorTable = new Color[]
-		{
-			Color.Red,		Color.Green,	Color.Blue,			Color.Yellow,
-			Color.Violet,	Color.Brown,	Color.Olive,		Color.Cyan,
+        {
+            Color.Red,      Color.Green,    Color.Blue,         Color.Yellow,
+            Color.Violet,   Color.Brown,    Color.Olive,        Color.Cyan,
 
-			Color.Magenta,	Color.Gold,		Color.Indigo,		Color.Ivory,
-			Color.HotPink,	Color.DarkRed,	Color.DarkGreen,	Color.DarkBlue,
+            Color.Magenta,   Color.Gold,     Color.Indigo,       Color.Ivory,
+            Color.HotPink,  Color.DarkRed,  Color.DarkGreen,    Color.DarkBlue,
 
-			Color.DarkSeaGreen,	Color.Gray,	Color.DarkKhaki,	Color.DarkGray,
-			Color.LimeGreen, Color.Tomato,	Color.SteelBlue,	Color.SkyBlue,
+            Color.DarkSeaGreen,  Color.Gray, Color.DarkKhaki,    Color.DarkGray,
+            Color.LimeGreen, Color.Tomato,  Color.SteelBlue,    Color.SkyBlue,
 
-			Color.Silver,	Color.Salmon,	Color.SaddleBrown,	Color.RosyBrown,
-            Color.PowderBlue, Color.Plum,	Color.PapayaWhip,	Color.Orange
-		};
+            Color.Silver,    Color.Salmon,   Color.SaddleBrown,  Color.RosyBrown,
+            Color.PowderBlue, Color.Plum,   Color.PapayaWhip,   Color.Orange
+        };
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -70,7 +69,7 @@ namespace AForge.Imaging.Filters
         }
 
         // blob counter
-        private BlobCounterBase blobCounter = new BlobCounter( );
+        private BlobCounterBase blobCounter = new BlobCounter();
 
         /// <summary>
         /// Blob counter used to locate separate blobs.
@@ -177,7 +176,7 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="ConnectedComponentsLabeling"/> class.
         /// </summary>
         /// 
-        public ConnectedComponentsLabeling( )
+        public ConnectedComponentsLabeling()
         {
             // initialize format translation dictionary
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format24bppRgb;
@@ -193,33 +192,33 @@ namespace AForge.Imaging.Filters
         /// <param name="sourceData">Source image data.</param>
         /// <param name="destinationData">Destination image data.</param>
         /// 
-        protected override unsafe void ProcessFilter( UnmanagedImage sourceData, UnmanagedImage destinationData )
+        protected override unsafe void ProcessFilter(UnmanagedImage sourceData, UnmanagedImage destinationData)
         {
             // process the image
-            blobCounter.ProcessImage( sourceData );
+            blobCounter.ProcessImage(sourceData);
 
             // get object labels
             int[] labels = blobCounter.ObjectLabels;
 
             // get width and height
-            int width  = sourceData.Width;
+            int width = sourceData.Width;
             int height = sourceData.Height;
 
             int dstOffset = destinationData.Stride - width * 3;
 
             // do the job
-            byte* dst = (byte*) destinationData.ImageData.ToPointer( );
+            byte* dst = (byte*)destinationData.ImageData.ToPointer();
             int p = 0;
 
             // for each row
-            for ( int y = 0; y < height; y++ )
+            for (int y = 0; y < height; y++)
             {
                 // for each pixel
-                for ( int x = 0; x < width; x++, dst += 3, p++ )
+                for (int x = 0; x < width; x++, dst += 3, p++)
                 {
-                    if ( labels[p] != 0 )
+                    if (labels[p] != 0)
                     {
-                        Color c = colorTable[( labels[p] - 1 ) % colorTable.Length];
+                        Color c = colorTable[(labels[p] - 1) % colorTable.Length];
 
                         dst[RGB.R] = c.R;
                         dst[RGB.G] = c.G;

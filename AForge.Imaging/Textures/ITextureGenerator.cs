@@ -8,8 +8,6 @@
 
 namespace AForge.Imaging.Textures
 {
-    using System;
-
     /// <summary>
     /// Texture generator interface.
     /// </summary>
@@ -31,7 +29,7 @@ namespace AForge.Imaging.Textures
         /// 
         /// <remarks>Generates new texture of the specified size.</remarks>
         /// 
-        float[,] Generate( int width, int height );
+        float[,] Generate(int width, int height);
 
         /// <summary>
         /// Reset generator.
@@ -40,6 +38,6 @@ namespace AForge.Imaging.Textures
         /// <remarks>Resets the generator - resets all internal variables, regenerates
         /// internal random numbers, etc.</remarks>
         /// 
-        void Reset( );
+        void Reset();
     }
 }

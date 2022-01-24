@@ -42,10 +42,10 @@ namespace AForge.Imaging.Filters
         private double noiseAmount = 10;
 
         // random number generator
-        private Random rand = new Random( );
+        private Random rand = new Random();
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -62,14 +62,14 @@ namespace AForge.Imaging.Filters
         public double NoiseAmount
         {
             get { return noiseAmount; }
-            set { noiseAmount = Math.Max( 0, Math.Min( 100, value ) ); }
+            set { noiseAmount = Math.Max(0, Math.Min(100, value)); }
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SaltAndPepperNoise"/> class.
         /// </summary>
         /// 
-        public SaltAndPepperNoise( )
+        public SaltAndPepperNoise()
         {
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
             formatTranslations[PixelFormat.Format24bppRgb]    = PixelFormat.Format24bppRgb;
@@ -83,8 +83,8 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="noiseAmount">Amount of noise to generate in percents, [0, 100].</param>
         /// 
-        public SaltAndPepperNoise( double noiseAmount )
-            : this( )
+        public SaltAndPepperNoise(double noiseAmount)
+            : this()
         {
             this.noiseAmount = noiseAmount;
         }
@@ -96,45 +96,45 @@ namespace AForge.Imaging.Filters
         /// <param name="image">Source image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         ///
-        protected override unsafe void ProcessFilter( UnmanagedImage image, Rectangle rect )
+        protected override unsafe void ProcessFilter(UnmanagedImage image, Rectangle rect)
         {
-            int startX  = rect.Left;
-            int startY  = rect.Top;
-            int width   = rect.Width;
-            int height  = rect.Height;
-            int stride  = image.Stride;
+            int startX = rect.Left;
+            int startY = rect.Top;
+            int width = rect.Width;
+            int height = rect.Height;
+            int stride = image.Stride;
 
-            int noisyPixels = (int) ( ( width * height * noiseAmount ) / 100 );
+            int noisyPixels = (int)((width * height * noiseAmount) / 100);
 
             // values to set
             byte[] values = new byte[2] { 0, 255 };
 
             // do the job
-            byte* ptr = (byte*) image.ImageData.ToPointer( );
+            byte* ptr = (byte*)image.ImageData.ToPointer();
 
-            if ( image.PixelFormat == PixelFormat.Format8bppIndexed )
+            if (image.PixelFormat == PixelFormat.Format8bppIndexed)
             {
                 // grayscale image
-                for ( int i = 0; i < noisyPixels; i++ )
+                for (int i = 0; i < noisyPixels; i++)
                 {
-                    int x = startX + rand.Next( width );
-                    int y = startY + rand.Next( height );
+                    int x = startX + rand.Next(width);
+                    int y = startY + rand.Next(height);
 
-                    ptr[y * stride + x] = values[rand.Next( 2 )];
+                    ptr[y * stride + x] = values[rand.Next(2)];
                 }
             }
             else
             {
-                int pixelSize = ( image.PixelFormat == PixelFormat.Format24bppRgb ) ? 3 : 4;
+                int pixelSize = (image.PixelFormat == PixelFormat.Format24bppRgb) ? 3 : 4;
 
                 // color image
-                for ( int i = 0; i < noisyPixels; i++ )
+                for (int i = 0; i < noisyPixels; i++)
                 {
-                    int x = startX + rand.Next( width );
-                    int y = startY + rand.Next( height );
-                    int colorPlane = rand.Next( 3 );
+                    int x = startX + rand.Next(width);
+                    int y = startY + rand.Next(height);
+                    int colorPlane = rand.Next(3);
 
-                    ptr[y * stride + x * pixelSize + colorPlane] = values[rand.Next( 2 )];
+                    ptr[y * stride + x * pixelSize + colorPlane] = values[rand.Next(2)];
                 }
             }
         }

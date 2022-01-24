@@ -7,7 +7,6 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
@@ -69,7 +68,7 @@ namespace AForge.Imaging.Filters
     public sealed class Sepia : BaseInPlacePartialFilter
     {
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -82,7 +81,7 @@ namespace AForge.Imaging.Filters
         /// <summary>   
         /// Initializes a new instance of the <see cref="Sepia"/> class.
         /// </summary>
-        public Sepia( )
+        public Sepia()
         {
             formatTranslations[PixelFormat.Format24bppRgb]  = PixelFormat.Format24bppRgb;
             formatTranslations[PixelFormat.Format32bppRgb]  = PixelFormat.Format32bppRgb;
@@ -96,37 +95,37 @@ namespace AForge.Imaging.Filters
         /// <param name="image">Source image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         ///
-        protected override unsafe void ProcessFilter( UnmanagedImage image, Rectangle rect )
+        protected override unsafe void ProcessFilter(UnmanagedImage image, Rectangle rect)
         {
-            int pixelSize = ( image.PixelFormat == PixelFormat.Format24bppRgb ) ? 3 : 4;
+            int pixelSize = (image.PixelFormat == PixelFormat.Format24bppRgb) ? 3 : 4;
 
-            int startX  = rect.Left;
-            int startY  = rect.Top;
-            int stopX   = startX + rect.Width;
-            int stopY   = startY + rect.Height;
-            int offset  = image.Stride - rect.Width * pixelSize;
+            int startX = rect.Left;
+            int startY = rect.Top;
+            int stopX = startX + rect.Width;
+            int stopY = startY + rect.Height;
+            int offset = image.Stride - rect.Width * pixelSize;
 
             // do the job
-            byte* ptr = (byte*) image.ImageData.ToPointer( );
+            byte* ptr = (byte*)image.ImageData.ToPointer();
             byte t;
 
             // allign pointer to the first pixel to process
-            ptr += ( startY * image.Stride + startX * pixelSize );
+            ptr += (startY * image.Stride + startX * pixelSize);
 
             // for each line	
-            for ( int y = startY; y < stopY; y++ )
+            for (int y = startY; y < stopY; y++)
             {
                 // for each pixel
-                for ( int x = startX; x < stopX; x++, ptr += pixelSize )
+                for (int x = startX; x < stopX; x++, ptr += pixelSize)
                 {
-                    t = (byte) ( 0.299 * ptr[RGB.R] + 0.587 * ptr[RGB.G] + 0.114 * ptr[RGB.B] );
+                    t = (byte)(0.299 * ptr[RGB.R] + 0.587 * ptr[RGB.G] + 0.114 * ptr[RGB.B]);
 
                     // red
-                    ptr[RGB.R] = (byte) ( ( t > 206 ) ? 255 : t + 49 );
+                    ptr[RGB.R] = (byte)((t > 206) ? 255 : t + 49);
                     // green
-                    ptr[RGB.G] = (byte) ( ( t < 14 ) ? 0 : t - 14 );
+                    ptr[RGB.G] = (byte)((t < 14) ? 0 : t - 14);
                     // blue
-                    ptr[RGB.B] = (byte) ( ( t < 56 ) ? 0 : t - 56 );
+                    ptr[RGB.B] = (byte)((t < 56) ? 0 : t - 56);
                 }
                 ptr += offset;
             }

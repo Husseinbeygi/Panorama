@@ -77,7 +77,7 @@ namespace AForge.Imaging.Filters
             {
                 backgroundImage = value;
 
-                if ( value != null )
+                if (value != null)
                     unmanagedBackgroundImage = null;
             }
         }
@@ -103,13 +103,13 @@ namespace AForge.Imaging.Filters
             {
                 unmanagedBackgroundImage = value;
 
-                if ( value != null )
+                if (value != null)
                     backgroundImage = null;
             }
         }
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -132,7 +132,7 @@ namespace AForge.Imaging.Filters
         /// kernel size is set to 21). Before blurring the original image is resized to 1/3 of its original size
         /// and then the result of blurring is resized back to the original size.</para></remarks>
         /// 
-        public FlatFieldCorrection( )
+        public FlatFieldCorrection()
         {
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
             formatTranslations[PixelFormat.Format24bppRgb]    = PixelFormat.Format24bppRgb;
@@ -144,7 +144,7 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="backgroundImage">Background image used for flat field correction.</param>
         /// 
-        public FlatFieldCorrection( Bitmap backgroundImage ) : this( )
+        public FlatFieldCorrection(Bitmap backgroundImage) : this()
         {
             this.backgroundImage = backgroundImage;
         }
@@ -155,55 +155,55 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="image">Source image data.</param>
         ///
-        protected override unsafe void ProcessFilter( UnmanagedImage image )
+        protected override unsafe void ProcessFilter(UnmanagedImage image)
         {
             UnmanagedImage bgImage = null;
             BitmapData bgLockedData = null;
 
             // get image size
-            int width  = image.Width;
+            int width = image.Width;
             int height = image.Height;
-            int offset = image.Stride - ( ( image.PixelFormat == PixelFormat.Format8bppIndexed ) ? width : width * 3 );
-            
+            int offset = image.Stride - ((image.PixelFormat == PixelFormat.Format8bppIndexed) ? width : width * 3);
+
             // check if we have provided background
-            if ( ( backgroundImage == null ) && ( unmanagedBackgroundImage == null ) )
+            if ((backgroundImage == null) && (unmanagedBackgroundImage == null))
             {
                 // resize image to 1/3 of its original size to make bluring faster
-                ResizeBicubic resizeFilter = new ResizeBicubic( (int) width / 3, (int) height / 3 );
-                UnmanagedImage tempImage = resizeFilter.Apply( image );
+                ResizeBicubic resizeFilter = new ResizeBicubic((int)width / 3, (int)height / 3);
+                UnmanagedImage tempImage = resizeFilter.Apply(image);
 
                 // create background image from the input image blurring it with Gaussian 5 times
-                GaussianBlur blur = new GaussianBlur( 5, 21 );
+                GaussianBlur blur = new GaussianBlur(5, 21);
 
-                blur.ApplyInPlace( tempImage );
-                blur.ApplyInPlace( tempImage );
-                blur.ApplyInPlace( tempImage );
-                blur.ApplyInPlace( tempImage );
-                blur.ApplyInPlace( tempImage );
+                blur.ApplyInPlace(tempImage);
+                blur.ApplyInPlace(tempImage);
+                blur.ApplyInPlace(tempImage);
+                blur.ApplyInPlace(tempImage);
+                blur.ApplyInPlace(tempImage);
 
                 // resize the blurred image back to original size
                 resizeFilter.NewWidth  = width;
                 resizeFilter.NewHeight = height;
-                bgImage = resizeFilter.Apply( tempImage );
+                bgImage = resizeFilter.Apply(tempImage);
 
-                tempImage.Dispose( );
+                tempImage.Dispose();
             }
             else
             {
-                if ( backgroundImage != null )
+                if (backgroundImage != null)
                 {
                     // check background image
-                    if ( ( width != backgroundImage.Width ) || ( height != backgroundImage.Height ) || ( image.PixelFormat != backgroundImage.PixelFormat ) )
+                    if ((width != backgroundImage.Width) || (height != backgroundImage.Height) || (image.PixelFormat != backgroundImage.PixelFormat))
                     {
-                        throw new InvalidImagePropertiesException( "Source image and background images must have the same size and pixel format" );
+                        throw new InvalidImagePropertiesException("Source image and background images must have the same size and pixel format");
                     }
 
                     // lock background image
                     bgLockedData = backgroundImage.LockBits(
-                        new Rectangle( 0, 0, width, height ),
-                        ImageLockMode.ReadOnly, backgroundImage.PixelFormat );
+                        new Rectangle(0, 0, width, height),
+                        ImageLockMode.ReadOnly, backgroundImage.PixelFormat);
 
-                    bgImage = new UnmanagedImage( bgLockedData );
+                    bgImage = new UnmanagedImage(bgLockedData);
                 }
                 else
                 {
@@ -212,24 +212,24 @@ namespace AForge.Imaging.Filters
             }
 
             // get background image's statistics (mean value is used as correction factor)
-            ImageStatistics bgStatistics = new ImageStatistics( bgImage );
+            ImageStatistics bgStatistics = new ImageStatistics(bgImage);
 
-            byte* src = (byte*) image.ImageData.ToPointer( );
-            byte* bg  = (byte*) bgImage.ImageData.ToPointer( );
+            byte* src = (byte*)image.ImageData.ToPointer();
+            byte* bg = (byte*)bgImage.ImageData.ToPointer();
 
             // do the job
-            if ( image.PixelFormat == PixelFormat.Format8bppIndexed )
+            if (image.PixelFormat == PixelFormat.Format8bppIndexed)
             {
                 // grayscale image
                 double mean = bgStatistics.Gray.Mean;
 
-                for ( int y = 0; y < height; y++ )
+                for (int y = 0; y < height; y++)
                 {
-                    for ( int x = 0; x < width; x++, src++, bg++ )
+                    for (int x = 0; x < width; x++, src++, bg++)
                     {
-                        if ( *bg != 0 )
+                        if (*bg != 0)
                         {
-                            *src = (byte) Math.Min( mean * *src / *bg, 255 );
+                            *src = (byte)Math.Min(mean * *src / *bg, 255);
                         }
                     }
                     src += offset;
@@ -243,24 +243,24 @@ namespace AForge.Imaging.Filters
                 double meanG = bgStatistics.Green.Mean;
                 double meanB = bgStatistics.Blue.Mean;
 
-                for ( int y = 0; y < height; y++ )
+                for (int y = 0; y < height; y++)
                 {
-                    for ( int x = 0; x < width; x++, src += 3, bg += 3 )
+                    for (int x = 0; x < width; x++, src += 3, bg += 3)
                     {
                         // red
-                        if ( bg[RGB.R] != 0 )
+                        if (bg[RGB.R] != 0)
                         {
-                            src[RGB.R] = (byte) Math.Min( meanR * src[RGB.R] / bg[RGB.R], 255 );
+                            src[RGB.R] = (byte)Math.Min(meanR * src[RGB.R] / bg[RGB.R], 255);
                         }
                         // green
-                        if ( bg[RGB.G] != 0 )
+                        if (bg[RGB.G] != 0)
                         {
-                            src[RGB.G] = (byte) Math.Min( meanG * src[RGB.G] / bg[RGB.G], 255 );
+                            src[RGB.G] = (byte)Math.Min(meanG * src[RGB.G] / bg[RGB.G], 255);
                         }
                         // blue
-                        if ( bg[RGB.B] != 0 )
+                        if (bg[RGB.B] != 0)
                         {
-                            src[RGB.B] = (byte) Math.Min( meanB * src[RGB.B] / bg[RGB.B], 255 );
+                            src[RGB.B] = (byte)Math.Min(meanB * src[RGB.B] / bg[RGB.B], 255);
                         }
                     }
                     src += offset;
@@ -268,15 +268,15 @@ namespace AForge.Imaging.Filters
                 }
             }
 
-            if ( backgroundImage != null )
+            if (backgroundImage != null)
             {
-                backgroundImage.UnlockBits( bgLockedData );
+                backgroundImage.UnlockBits(bgLockedData);
             }
 
             // dispose background image if it was not set manually
-            if ( ( backgroundImage == null ) && ( unmanagedBackgroundImage == null ) )
+            if ((backgroundImage == null) && (unmanagedBackgroundImage == null))
             {
-                bgImage.Dispose( );
+                bgImage.Dispose();
             }
         }
     }

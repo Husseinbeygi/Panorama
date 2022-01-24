@@ -10,7 +10,6 @@ namespace AForge.Imaging.Filters
 {
     using System;
     using System.Collections.Generic;
-    using System.Drawing;
     using System.Drawing.Imaging;
 
     /// <summary>
@@ -43,11 +42,11 @@ namespace AForge.Imaging.Filters
     public class FillHoles : BaseInPlaceFilter
     {
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
         // coupled size filtering or not
         private bool coupledSizeFiltering = true;
         // maximum hole size to fill
-        private int maxHoleWidth  = int.MaxValue;
+        private int maxHoleWidth = int.MaxValue;
         private int maxHoleHeight = int.MaxValue;
 
         /// <summary>
@@ -80,7 +79,7 @@ namespace AForge.Imaging.Filters
         public int MaxHoleWidth
         {
             get { return maxHoleWidth; }
-            set { maxHoleWidth = Math.Max( value, 0 ); }
+            set { maxHoleWidth = Math.Max(value, 0); }
         }
 
         /// <summary>
@@ -95,7 +94,7 @@ namespace AForge.Imaging.Filters
         public int MaxHoleHeight
         {
             get { return maxHoleHeight; }
-            set { maxHoleHeight = Math.Max( value, 0 ); }
+            set { maxHoleHeight = Math.Max(value, 0); }
         }
 
         /// <summary>
@@ -105,11 +104,11 @@ namespace AForge.Imaging.Filters
         {
             get { return formatTranslations; }
         }
-        
+
         /// <summary>   
         /// Initializes a new instance of the <see cref="FillHoles"/> class.
         /// </summary>
-        public FillHoles( )
+        public FillHoles()
         {
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
         }
@@ -120,37 +119,37 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="image">Source image data.</param>
         ///
-        protected override unsafe void ProcessFilter( UnmanagedImage image )
+        protected override unsafe void ProcessFilter(UnmanagedImage image)
         {
-            int width  = image.Width;
+            int width = image.Width;
             int height = image.Height;
 
             // 1 - invert the source image
-            Invert invertFilter = new Invert( );
-            UnmanagedImage invertedImage = invertFilter.Apply( image );
+            Invert invertFilter = new Invert();
+            UnmanagedImage invertedImage = invertFilter.Apply(image);
 
             // 2 - use blob counter to find holes (they are white objects now on the inverted image)
-            BlobCounter blobCounter = new BlobCounter( );
-            blobCounter.ProcessImage( invertedImage );
-            Blob[] blobs = blobCounter.GetObjectsInformation( );
+            BlobCounter blobCounter = new BlobCounter();
+            blobCounter.ProcessImage(invertedImage);
+            Blob[] blobs = blobCounter.GetObjectsInformation();
 
             // 3 - check all blobs and determine which should be filtered
             byte[] newObjectColors = new byte[blobs.Length + 1];
             newObjectColors[0] = 255; // don't touch the objects, which have 0 ID
 
-            for ( int i = 0, n = blobs.Length; i < n; i++ )
+            for (int i = 0, n = blobs.Length; i < n; i++)
             {
                 Blob blob = blobs[i];
 
-                if ( ( blob.Rectangle.Left == 0 ) || ( blob.Rectangle.Top == 0 ) ||
-                     ( blob.Rectangle.Right == width ) || ( blob.Rectangle.Bottom == height ) )
+                if ((blob.Rectangle.Left == 0) || (blob.Rectangle.Top == 0) ||
+                     (blob.Rectangle.Right == width) || (blob.Rectangle.Bottom == height))
                 {
                     newObjectColors[blob.ID] = 0;
                 }
                 else
                 {
-                    if ( ( ( coupledSizeFiltering ) && ( blob.Rectangle.Width <= maxHoleWidth ) && ( blob.Rectangle.Height <= maxHoleHeight ) ) |
-                         ( ( !coupledSizeFiltering ) && ( ( blob.Rectangle.Width <= maxHoleWidth ) || ( blob.Rectangle.Height <= maxHoleHeight ) ) ) )
+                    if (((coupledSizeFiltering) && (blob.Rectangle.Width <= maxHoleWidth) && (blob.Rectangle.Height <= maxHoleHeight)) |
+                         ((!coupledSizeFiltering) && ((blob.Rectangle.Width <= maxHoleWidth) || (blob.Rectangle.Height <= maxHoleHeight))))
                     {
                         newObjectColors[blob.ID] = 255;
                     }
@@ -162,14 +161,14 @@ namespace AForge.Imaging.Filters
             }
 
             // 4 - process the source image image and fill holes
-            byte* ptr = (byte*) image.ImageData.ToPointer( );
+            byte* ptr = (byte*)image.ImageData.ToPointer();
             int offset = image.Stride - width;
 
             int[] objectLabels = blobCounter.ObjectLabels;
 
-            for ( int y = 0, i = 0; y < height; y++ )
+            for (int y = 0, i = 0; y < height; y++)
             {
-                for ( int x = 0; x < width; x++, i++, ptr++ )
+                for (int x = 0; x < width; x++, i++, ptr++)
                 {
                     *ptr = newObjectColors[objectLabels[i]];
                 }

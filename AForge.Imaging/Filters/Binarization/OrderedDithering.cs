@@ -7,7 +7,6 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
@@ -55,15 +54,15 @@ namespace AForge.Imaging.Filters
         private int cols = 4;
 
         private byte[,] matrix = new byte[4, 4]
-		{
-			{  15, 143,  47, 175 },
-			{ 207,  79, 239, 111 },
-			{  63, 191,  31, 159 },
-			{ 255, 127, 223,  95 }
-		};
+        {
+            {  15, 143,  47, 175 },
+            { 207,  79, 239, 111 },
+            {  63, 191,  31, 159 },
+            { 255, 127, 223,  95 }
+        };
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -77,7 +76,7 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="OrderedDithering"/> class.
         /// </summary>
         /// 
-        public OrderedDithering( )
+        public OrderedDithering()
         {
             // initialize format translation dictionary
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
@@ -89,11 +88,11 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="matrix">Thresholds matrix.</param>
         /// 
-        public OrderedDithering( byte[,] matrix )
-            : this( )
+        public OrderedDithering(byte[,] matrix)
+            : this()
         {
-            rows = matrix.GetLength( 0 );
-            cols = matrix.GetLength( 1 );
+            rows = matrix.GetLength(0);
+            cols = matrix.GetLength(1);
 
             this.matrix = matrix;
         }
@@ -105,27 +104,27 @@ namespace AForge.Imaging.Filters
         /// <param name="image">Source image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         /// 
-        protected override unsafe void ProcessFilter( UnmanagedImage image, Rectangle rect )
+        protected override unsafe void ProcessFilter(UnmanagedImage image, Rectangle rect)
         {
-            int startX  = rect.Left;
-            int startY  = rect.Top;
-            int stopX   = startX + rect.Width;
-            int stopY   = startY + rect.Height;
-            int offset  = image.Stride - rect.Width;
+            int startX = rect.Left;
+            int startY = rect.Top;
+            int stopX = startX + rect.Width;
+            int stopY = startY + rect.Height;
+            int offset = image.Stride - rect.Width;
 
             // do the job
-            byte* ptr = (byte*) image.ImageData.ToPointer( );
+            byte* ptr = (byte*)image.ImageData.ToPointer();
 
             // allign pointer to the first pixel to process
-            ptr += ( startY * image.Stride + startX );
+            ptr += (startY * image.Stride + startX);
 
             // for each line	
-            for ( int y = startY; y < stopY; y++ )
+            for (int y = startY; y < stopY; y++)
             {
                 // for each pixel
-                for ( int x = startX; x < stopX; x++, ptr++ )
+                for (int x = startX; x < stopX; x++, ptr++)
                 {
-                    *ptr = (byte) ( ( *ptr <= matrix[( y % rows ), ( x % cols )] ) ? 0 : 255 );
+                    *ptr = (byte)((*ptr <= matrix[(y % rows), (x % cols)]) ? 0 : 255);
                 }
                 ptr += offset;
             }

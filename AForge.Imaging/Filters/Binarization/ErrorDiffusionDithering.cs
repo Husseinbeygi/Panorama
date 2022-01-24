@@ -7,11 +7,9 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
-    using AForge;
 
     /// <summary>
     /// Base class for error diffusion dithering.
@@ -84,7 +82,7 @@ namespace AForge.Imaging.Filters
         protected int stride;
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -98,7 +96,7 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="ErrorDiffusionDithering"/> class.
         /// </summary>
         /// 
-        protected ErrorDiffusionDithering( )
+        protected ErrorDiffusionDithering()
         {
             // initialize format translation dictionary
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
@@ -114,7 +112,7 @@ namespace AForge.Imaging.Filters
         /// <remarks>All parameters of the image and current processing pixel's coordinates
         /// are initialized in protected members.</remarks>
         /// 
-        protected abstract unsafe void Diffuse( int error, byte* ptr );
+        protected abstract unsafe void Diffuse(int error, byte* ptr);
 
         /// <summary>
         /// Process the filter on the specified image.
@@ -123,7 +121,7 @@ namespace AForge.Imaging.Filters
         /// <param name="image">Source image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         /// 
-        protected override unsafe void ProcessFilter( UnmanagedImage image, Rectangle rect )
+        protected override unsafe void ProcessFilter(UnmanagedImage image, Rectangle rect)
         {
             // processing start and stop X,Y positions
             startX = rect.Left;
@@ -138,21 +136,21 @@ namespace AForge.Imaging.Filters
             int v, error;
 
             // do the job
-            byte* ptr = (byte*) image.ImageData.ToPointer( );
+            byte* ptr = (byte*)image.ImageData.ToPointer();
 
             // allign pointer to the first pixel to process
-            ptr += ( startY * stride + startX );
+            ptr += (startY * stride + startX);
 
             // for each line
-            for ( y = startY; y < stopY; y++ )
+            for (y = startY; y < stopY; y++)
             {
                 // for each pixels
-                for ( x = startX; x < stopX; x++, ptr++ )
+                for (x = startX; x < stopX; x++, ptr++)
                 {
                     v = *ptr;
 
                     // fill the next destination pixel
-                    if ( v >= threshold )
+                    if (v >= threshold)
                     {
                         *ptr = 255;
                         error = v - 255;
@@ -164,7 +162,7 @@ namespace AForge.Imaging.Filters
                     }
 
                     // do error diffusion
-                    Diffuse( error, ptr );
+                    Diffuse(error, ptr);
                 }
                 ptr += offset;
             }

@@ -35,19 +35,19 @@ namespace AForge.Imaging.Textures
     public class CloudsTexture : ITextureGenerator
     {
         // Perlin noise function used for texture generation
-        private AForge.Math.PerlinNoise noise = new AForge.Math.PerlinNoise( 8, 0.5, 1.0 / 32, 1.0 );
+        private AForge.Math.PerlinNoise noise = new AForge.Math.PerlinNoise(8, 0.5, 1.0 / 32, 1.0);
 
         // randmom number generator
-        private Random rand = new Random( );
-        private int		r;
+        private Random rand = new Random();
+        private int r;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CloudsTexture"/> class.
         /// </summary>
         /// 
-        public CloudsTexture( )
+        public CloudsTexture()
         {
-            Reset( );
+            Reset();
         }
 
         /// <summary>
@@ -61,18 +61,18 @@ namespace AForge.Imaging.Textures
         /// 
         /// <remarks>Generates new texture of the specified size.</remarks>
         ///  
-        public float[,] Generate( int width, int height )
+        public float[,] Generate(int width, int height)
         {
             float[,] texture = new float[height, width];
 
-            for ( int y = 0; y < height; y++ )
+            for (int y = 0; y < height; y++)
             {
-                for ( int x = 0; x < width; x++ )
+                for (int x = 0; x < width; x++)
                 {
                     texture[y, x] =
-                        Math.Max( 0.0f, Math.Min( 1.0f,
-                            (float) noise.Function2D( x + r, y + r ) * 0.5f + 0.5f
-                        ) );
+                        Math.Max(0.0f, Math.Min(1.0f,
+                            (float)noise.Function2D(x + r, y + r) * 0.5f + 0.5f
+                        ));
 
                 }
             }
@@ -85,9 +85,9 @@ namespace AForge.Imaging.Textures
         /// 
         /// <remarks>Regenerates internal random numbers.</remarks>
         /// 
-        public void Reset( )
+        public void Reset()
         {
-            r = rand.Next( 5000 );
+            r = rand.Next(5000);
         }
     }
 }

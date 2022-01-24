@@ -8,9 +8,6 @@
 
 namespace AForge.Imaging
 {
-    using System;
-    using System.Drawing;
-
     /// <summary>
     /// Block match class keeps information about found block match. The class is
     /// used with block matching algorithms implementing <see cref="IBlockMatching"/>
@@ -55,7 +52,7 @@ namespace AForge.Imaging
         /// <param name="matchPoint">Match point in search image (point of a found match).</param>
         /// <param name="similarity">Similarity between blocks in source and search images, [0..1].</param>
         /// 
-        public BlockMatch( IntPoint sourcePoint, IntPoint matchPoint, float similarity )
+        public BlockMatch(IntPoint sourcePoint, IntPoint matchPoint, float similarity)
         {
             this.sourcePoint = sourcePoint;
             this.matchPoint  = matchPoint;

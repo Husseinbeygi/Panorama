@@ -45,7 +45,7 @@ namespace AForge.Imaging.Filters
     public class RotateNearestNeighbor : BaseRotateFilter
     {
         // format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -65,8 +65,8 @@ namespace AForge.Imaging.Filters
         /// <see langword="false"/>.
         /// </para></remarks>
         /// 
-        public RotateNearestNeighbor( double angle ) :
-            this( angle, false )
+        public RotateNearestNeighbor(double angle) :
+            this(angle, false)
         {
         }
 
@@ -77,8 +77,8 @@ namespace AForge.Imaging.Filters
         /// <param name="angle">Rotation angle.</param>
         /// <param name="keepSize">Keep image size or not.</param>
         /// 
-        public RotateNearestNeighbor( double angle, bool keepSize ) :
-            base( angle, keepSize )
+        public RotateNearestNeighbor(double angle, bool keepSize) :
+            base(angle, keepSize)
         {
             formatTranslations[PixelFormat.Format8bppIndexed]    = PixelFormat.Format8bppIndexed;
             formatTranslations[PixelFormat.Format24bppRgb]       = PixelFormat.Format24bppRgb;
@@ -93,46 +93,46 @@ namespace AForge.Imaging.Filters
         /// <param name="sourceData">Source image data.</param>
         /// <param name="destinationData">Destination image data.</param>
         /// 
-        protected override void ProcessFilter( UnmanagedImage sourceData, UnmanagedImage destinationData )
+        protected override void ProcessFilter(UnmanagedImage sourceData, UnmanagedImage destinationData)
         {
-            int pixelSize = Bitmap.GetPixelFormatSize( sourceData.PixelFormat ) / 8;
+            int pixelSize = Bitmap.GetPixelFormatSize(sourceData.PixelFormat) / 8;
 
-            switch ( pixelSize )
+            switch (pixelSize)
             {
                 case 1:
                 case 3:
-                    ProcessFilter8bpc( sourceData, destinationData );
+                    ProcessFilter8bpc(sourceData, destinationData);
                     break;
                 case 2:
                 case 6:
-                    ProcessFilter16bpc( sourceData, destinationData );
+                    ProcessFilter16bpc(sourceData, destinationData);
                     break;
             }
         }
 
         // Process the filter on the image with 8 bits per color channel
-        private unsafe void ProcessFilter8bpc( UnmanagedImage sourceData, UnmanagedImage destinationData )
+        private unsafe void ProcessFilter8bpc(UnmanagedImage sourceData, UnmanagedImage destinationData)
         {
             // get source image size
-            int    width      = sourceData.Width;
-            int    height     = sourceData.Height;
-            double oldXradius = (double) ( width  - 1 ) / 2;
-            double oldYradius = (double) ( height - 1 ) / 2;
+            int width = sourceData.Width;
+            int height = sourceData.Height;
+            double oldXradius = (double)(width  - 1) / 2;
+            double oldYradius = (double)(height - 1) / 2;
 
             // get destination image size
-            int    newWidth   = destinationData.Width;
-            int    newHeight  = destinationData.Height;
-            double newXradius = (double) ( newWidth  - 1 ) / 2;
-            double newYradius = (double) ( newHeight - 1 ) / 2;
+            int newWidth = destinationData.Width;
+            int newHeight = destinationData.Height;
+            double newXradius = (double)(newWidth  - 1) / 2;
+            double newYradius = (double)(newHeight - 1) / 2;
 
             // angle's sine and cosine
             double angleRad = -angle * Math.PI / 180;
-            double angleCos = Math.Cos( angleRad );
-            double angleSin = Math.Sin( angleRad );
+            double angleCos = Math.Cos(angleRad);
+            double angleSin = Math.Sin(angleRad);
 
             int srcStride = sourceData.Stride;
             int dstOffset = destinationData.Stride -
-                ( ( destinationData.PixelFormat == PixelFormat.Format8bppIndexed ) ? newWidth : newWidth * 3 );
+                ((destinationData.PixelFormat == PixelFormat.Format8bppIndexed) ? newWidth : newWidth * 3);
 
             // fill values
             byte fillR = fillColor.R;
@@ -140,8 +140,8 @@ namespace AForge.Imaging.Filters
             byte fillB = fillColor.B;
 
             // do the job
-            byte* src = (byte*) sourceData.ImageData.ToPointer( );
-            byte* dst = (byte*) destinationData.ImageData.ToPointer( );
+            byte* src = (byte*)sourceData.ImageData.ToPointer();
+            byte* dst = (byte*)destinationData.ImageData.ToPointer();
 
             // destination pixel's coordinate relative to image center
             double cx, cy;
@@ -151,21 +151,21 @@ namespace AForge.Imaging.Filters
             byte* p;
 
             // check pixel format
-            if ( destinationData.PixelFormat == PixelFormat.Format8bppIndexed )
+            if (destinationData.PixelFormat == PixelFormat.Format8bppIndexed)
             {
                 // grayscale
                 cy = -newYradius;
-                for ( int y = 0; y < newHeight; y++ )
+                for (int y = 0; y < newHeight; y++)
                 {
                     cx = -newXradius;
-                    for ( int x = 0; x < newWidth; x++, dst++ )
+                    for (int x = 0; x < newWidth; x++, dst++)
                     {
                         // coordinate of the nearest point
-                        ox = (int) (  angleCos * cx + angleSin * cy + oldXradius );
-                        oy = (int) ( -angleSin * cx + angleCos * cy + oldYradius );
+                        ox = (int)(angleCos * cx + angleSin * cy + oldXradius);
+                        oy = (int)(-angleSin * cx + angleCos * cy + oldYradius);
 
                         // validate source pixel's coordinates
-                        if ( ( ox < 0 ) || ( oy < 0 ) || ( ox >= width ) || ( oy >= height ) )
+                        if ((ox < 0) || (oy < 0) || (ox >= width) || (oy >= height))
                         {
                             // fill destination image with filler
                             *dst = fillG;
@@ -185,17 +185,17 @@ namespace AForge.Imaging.Filters
             {
                 // RGB
                 cy = -newYradius;
-                for ( int y = 0; y < newHeight; y++ )
+                for (int y = 0; y < newHeight; y++)
                 {
                     cx = -newXradius;
-                    for ( int x = 0; x < newWidth; x++, dst += 3 )
+                    for (int x = 0; x < newWidth; x++, dst += 3)
                     {
                         // coordinate of the nearest point
-                        ox = (int) (  angleCos * cx + angleSin * cy + oldXradius );
-                        oy = (int) ( -angleSin * cx + angleCos * cy + oldYradius );
+                        ox = (int)(angleCos * cx + angleSin * cy + oldXradius);
+                        oy = (int)(-angleSin * cx + angleCos * cy + oldYradius);
 
                         // validate source pixel's coordinates
-                        if ( ( ox < 0 ) || ( oy < 0 ) || ( ox >= width ) || ( oy >= height ) )
+                        if ((ox < 0) || (oy < 0) || (ox >= width) || (oy >= height))
                         {
                             // fill destination image with filler
                             dst[RGB.R] = fillR;
@@ -220,36 +220,36 @@ namespace AForge.Imaging.Filters
         }
 
         // Process the filter on the image with 16 bits per color channel.
-        private unsafe void ProcessFilter16bpc( UnmanagedImage sourceData, UnmanagedImage destinationData )
+        private unsafe void ProcessFilter16bpc(UnmanagedImage sourceData, UnmanagedImage destinationData)
         {
             // get source image size
-            int width  = sourceData.Width;
+            int width = sourceData.Width;
             int height = sourceData.Height;
-            double halfWidth  = (double) width / 2;
-            double halfHeight = (double) height / 2;
+            double halfWidth = (double)width / 2;
+            double halfHeight = (double)height / 2;
 
             // get destination image size
-            int newWidth  = destinationData.Width;
+            int newWidth = destinationData.Width;
             int newHeight = destinationData.Height;
-            double halfNewWidth  = (double) newWidth / 2;
-            double halfNewHeight = (double) newHeight / 2;
+            double halfNewWidth = (double)newWidth / 2;
+            double halfNewHeight = (double)newHeight / 2;
 
             // angle's sine and cosine
             double angleRad = -angle * Math.PI / 180;
-            double angleCos = Math.Cos( angleRad );
-            double angleSin = Math.Sin( angleRad );
+            double angleCos = Math.Cos(angleRad);
+            double angleSin = Math.Sin(angleRad);
 
             int srcStride = sourceData.Stride;
             int dstStride = destinationData.Stride;
 
             // fill values
-            ushort fillR = (ushort) ( fillColor.R << 8 );
-            ushort fillG = (ushort) ( fillColor.G << 8 );
-            ushort fillB = (ushort) ( fillColor.B << 8 );
+            ushort fillR = (ushort)(fillColor.R << 8);
+            ushort fillG = (ushort)(fillColor.G << 8);
+            ushort fillB = (ushort)(fillColor.B << 8);
 
             // do the job
-            byte* src = (byte*) sourceData.ImageData.ToPointer( );
-            byte* dstBase = (byte*) destinationData.ImageData.ToPointer( );
+            byte* src = (byte*)sourceData.ImageData.ToPointer();
+            byte* dstBase = (byte*)destinationData.ImageData.ToPointer();
 
             // destination pixel's coordinate relative to image center
             double cx, cy;
@@ -259,23 +259,23 @@ namespace AForge.Imaging.Filters
             ushort* p;
 
             // check pixel format
-            if ( destinationData.PixelFormat == PixelFormat.Format16bppGrayScale )
+            if (destinationData.PixelFormat == PixelFormat.Format16bppGrayScale)
             {
                 // grayscale
                 cy = -halfNewHeight;
-                for ( int y = 0; y < newHeight; y++ )
+                for (int y = 0; y < newHeight; y++)
                 {
-                    ushort* dst = (ushort*) ( dstBase + y * dstStride );
+                    ushort* dst = (ushort*)(dstBase + y * dstStride);
 
                     cx = -halfNewWidth;
-                    for ( int x = 0; x < newWidth; x++, dst++ )
+                    for (int x = 0; x < newWidth; x++, dst++)
                     {
                         // coordinate of the nearest point
-                        ox = (int) (  angleCos * cx + angleSin * cy + halfWidth );
-                        oy = (int) ( -angleSin * cx + angleCos * cy + halfHeight );
+                        ox = (int)(angleCos * cx + angleSin * cy + halfWidth);
+                        oy = (int)(-angleSin * cx + angleCos * cy + halfHeight);
 
                         // validate source pixel's coordinates
-                        if ( ( ox < 0 ) || ( oy < 0 ) || ( ox >= width ) || ( oy >= height ) )
+                        if ((ox < 0) || (oy < 0) || (ox >= width) || (oy >= height))
                         {
                             // fill destination image with filler
                             *dst = fillG;
@@ -283,7 +283,7 @@ namespace AForge.Imaging.Filters
                         else
                         {
                             // fill destination image with pixel from source image
-                            p = (ushort*) ( src + oy * srcStride + ox * 2 );
+                            p = (ushort*)(src + oy * srcStride + ox * 2);
                             *dst = *p;
                         }
                         cx++;
@@ -295,19 +295,19 @@ namespace AForge.Imaging.Filters
             {
                 // RGB
                 cy = -halfNewHeight;
-                for ( int y = 0; y < newHeight; y++ )
+                for (int y = 0; y < newHeight; y++)
                 {
-                    ushort* dst = (ushort*) ( dstBase + y * dstStride );
+                    ushort* dst = (ushort*)(dstBase + y * dstStride);
 
                     cx = -halfNewWidth;
-                    for ( int x = 0; x < newWidth; x++, dst += 3 )
+                    for (int x = 0; x < newWidth; x++, dst += 3)
                     {
                         // coordinate of the nearest point
-                        ox = (int) (  angleCos * cx + angleSin * cy + halfWidth );
-                        oy = (int) ( -angleSin * cx + angleCos * cy + halfHeight );
+                        ox = (int)(angleCos * cx + angleSin * cy + halfWidth);
+                        oy = (int)(-angleSin * cx + angleCos * cy + halfHeight);
 
                         // validate source pixel's coordinates
-                        if ( ( ox < 0 ) || ( oy < 0 ) || ( ox >= width ) || ( oy >= height ) )
+                        if ((ox < 0) || (oy < 0) || (ox >= width) || (oy >= height))
                         {
                             // fill destination image with filler
                             dst[RGB.R] = fillR;
@@ -317,7 +317,7 @@ namespace AForge.Imaging.Filters
                         else
                         {
                             // fill destination image with pixel from source image
-                            p = (ushort*) ( src + oy * srcStride + ox * 6 );
+                            p = (ushort*)(src + oy * srcStride + ox * 6);
 
                             dst[RGB.R] = p[RGB.R];
                             dst[RGB.G] = p[RGB.G];

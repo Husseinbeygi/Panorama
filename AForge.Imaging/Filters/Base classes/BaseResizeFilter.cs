@@ -9,7 +9,6 @@ namespace AForge.Imaging.Filters
 {
     using System;
     using System.Drawing;
-    using System.Drawing.Imaging;
 
     /// <summary>
     /// Base class for image resizing filters.
@@ -38,7 +37,7 @@ namespace AForge.Imaging.Filters
         public int NewWidth
         {
             get { return newWidth; }
-            set { newWidth = Math.Max( 1, value ); }
+            set { newWidth = Math.Max(1, value); }
         }
 
         /// <summary>
@@ -48,7 +47,7 @@ namespace AForge.Imaging.Filters
         public int NewHeight
         {
             get { return newHeight; }
-            set { newHeight = Math.Max( 1, value ); }
+            set { newHeight = Math.Max(1, value); }
         }
 
         /// <summary>
@@ -58,7 +57,7 @@ namespace AForge.Imaging.Filters
         /// <param name="newWidth">Width of the new resized image.</param>
         /// <param name="newHeight">Height of the new resize image.</param>
         /// 
-        protected BaseResizeFilter( int newWidth, int newHeight )
+        protected BaseResizeFilter(int newWidth, int newHeight)
         {
             this.newWidth  = newWidth;
             this.newHeight = newHeight;
@@ -72,9 +71,9 @@ namespace AForge.Imaging.Filters
         /// 
         /// <returns>New image size - size of the destination image.</returns>
         /// 
-        protected override System.Drawing.Size CalculateNewImageSize( UnmanagedImage sourceData )
+        protected override System.Drawing.Size CalculateNewImageSize(UnmanagedImage sourceData)
         {
-            return new Size( newWidth, newHeight );
+            return new Size(newWidth, newHeight);
         }
     }
 }

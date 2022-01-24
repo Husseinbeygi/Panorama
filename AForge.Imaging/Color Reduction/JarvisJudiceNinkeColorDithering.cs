@@ -8,10 +8,6 @@
 
 namespace AForge.Imaging.ColorReduction
 {
-    using System;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-
     /// <summary>
     /// Color dithering using Jarvis, Judice and Ninke error diffusion.
     /// </summary>
@@ -62,11 +58,11 @@ namespace AForge.Imaging.ColorReduction
         /// Initializes a new instance of the <see cref="JarvisJudiceNinkeColorDithering"/> class.
         /// </summary>
         /// 
-        public JarvisJudiceNinkeColorDithering( )
-            : base( new int[3][] {
+        public JarvisJudiceNinkeColorDithering()
+            : base(new int[3][] {
                 new int[2] { 7, 5 },
                 new int[5] { 3, 5, 7, 5, 3 },
-                new int[5] { 1, 3, 5, 3, 1 } } )
+                new int[5] { 1, 3, 5, 3, 1 } })
         {
         }
     }

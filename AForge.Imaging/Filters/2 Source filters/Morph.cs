@@ -44,10 +44,10 @@ namespace AForge.Imaging.Filters
     /// 
     public class Morph : BaseInPlaceFilter2
     {
-        private double	sourcePercent = 0.50;
+        private double sourcePercent = 0.50;
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -67,16 +67,16 @@ namespace AForge.Imaging.Filters
         public double SourcePercent
         {
             get { return sourcePercent; }
-            set { sourcePercent = Math.Max( 0.0, Math.Min( 1.0, value ) ); }
+            set { sourcePercent = Math.Max(0.0, Math.Min(1.0, value)); }
         }
 
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Morph"/> class.
         /// </summary>
-        public Morph( )
+        public Morph()
         {
-            InitFormatTranslations( );
+            InitFormatTranslations();
         }
 
         /// <summary>
@@ -85,10 +85,10 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="overlayImage">Overlay image.</param>
         /// 
-        public Morph( Bitmap overlayImage )
-            : base( overlayImage )
+        public Morph(Bitmap overlayImage)
+            : base(overlayImage)
         {
-            InitFormatTranslations( );
+            InitFormatTranslations();
         }
 
         /// <summary>
@@ -97,14 +97,14 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="unmanagedOverlayImage">Unmanaged overlay image.</param>
         /// 
-        public Morph( UnmanagedImage unmanagedOverlayImage )
-            : base( unmanagedOverlayImage )
+        public Morph(UnmanagedImage unmanagedOverlayImage)
+            : base(unmanagedOverlayImage)
         {
-            InitFormatTranslations( );
+            InitFormatTranslations();
         }
 
         // Initialize format translation dictionary
-        private void InitFormatTranslations( )
+        private void InitFormatTranslations()
         {
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
             formatTranslations[PixelFormat.Format24bppRgb]    = PixelFormat.Format24bppRgb;
@@ -117,31 +117,31 @@ namespace AForge.Imaging.Filters
         /// <param name="image">Source image data.</param>
         /// <param name="overlay">Overlay image data.</param>
         ///
-        protected override unsafe void ProcessFilter( UnmanagedImage image, UnmanagedImage overlay )
+        protected override unsafe void ProcessFilter(UnmanagedImage image, UnmanagedImage overlay)
         {
             // get image dimension
-            int width  = image.Width;
+            int width = image.Width;
             int height = image.Height;
 
             // initialize other variables
-            int pixelSize = ( image.PixelFormat == PixelFormat.Format8bppIndexed ) ? 1 : 3;
-            int lineSize  = width * pixelSize;
-            int offset    = image.Stride - lineSize;
+            int pixelSize = (image.PixelFormat == PixelFormat.Format8bppIndexed) ? 1 : 3;
+            int lineSize = width * pixelSize;
+            int offset = image.Stride - lineSize;
             int ovrOffset = overlay.Stride - lineSize;
             // percentage of overlay image
             double q = 1.0 - sourcePercent;
 
             // do the job
-            byte * ptr = (byte*) image.ImageData.ToPointer( );
-            byte * ovr = (byte*) overlay.ImageData.ToPointer( );
+            byte* ptr = (byte*)image.ImageData.ToPointer();
+            byte* ovr = (byte*)overlay.ImageData.ToPointer();
 
             // for each line
-            for ( int y = 0; y < height; y++ )
+            for (int y = 0; y < height; y++)
             {
                 // for each pixel
-                for ( int x = 0; x < lineSize; x++, ptr++, ovr++ )
+                for (int x = 0; x < lineSize; x++, ptr++, ovr++)
                 {
-                    *ptr = (byte) ( ( sourcePercent * ( *ptr ) ) + ( q * ( *ovr ) ) );
+                    *ptr = (byte)((sourcePercent * (*ptr)) + (q * (*ovr)));
                 }
                 ptr += offset;
                 ovr += ovrOffset;

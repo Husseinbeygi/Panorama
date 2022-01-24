@@ -8,10 +8,10 @@
 
 namespace AForge.Imaging.Filters
 {
-	/// <summary>
-	/// Mean filter.
-	/// </summary>
-	/// 
+    /// <summary>
+    /// Mean filter.
+    /// </summary>
+    /// 
     /// <remarks><para>The filter performs each pixel value's averaging with its 8 neighbors, which is 
     /// <see cref="Convolution">convolution filter</see> using the mean kernel:</para>
     /// 
@@ -48,16 +48,16 @@ namespace AForge.Imaging.Filters
     /// <seealso cref="Convolution"/>
     /// 
     public sealed class Mean : Convolution
-	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Mean"/> class.
-		/// </summary>
-		public Mean( ) : base( new int[,] {
-										{ 1, 1, 1 },
-										{ 1, 1, 1 },
-										{ 1, 1, 1 } } )
-		{
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Mean"/> class.
+        /// </summary>
+        public Mean() : base(new int[,] {
+                                        { 1, 1, 1 },
+                                        { 1, 1, 1 },
+                                        { 1, 1, 1 } })
+        {
             base.ProcessAlpha = true;
-		}
-	}
+        }
+    }
 }

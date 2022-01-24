@@ -7,10 +7,10 @@
 
 namespace AForge.Imaging.Filters
 {
-	/// <summary>
-	/// Simple edge detector.
-	/// </summary>
-	/// 
+    /// <summary>
+    /// Simple edge detector.
+    /// </summary>
+    /// 
     /// <remarks><para>The filter performs <see cref="Convolution">convolution filter</see> using
     /// the edges kernel:</para>
     /// 
@@ -40,15 +40,15 @@ namespace AForge.Imaging.Filters
     /// <seealso cref="Convolution"/>
     ///
     public sealed class Edges : Convolution
-	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Edges"/> class.
-		/// </summary>
-		public Edges( ) : base( new int[,] {
-										{  0, -1,  0 },
-										{ -1,  4, -1 },
-										{  0, -1,  0 } } )
-		{
-		}
-	}
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Edges"/> class.
+        /// </summary>
+        public Edges() : base(new int[,] {
+                                        {  0, -1,  0 },
+                                        { -1,  4, -1 },
+                                        {  0, -1,  0 } })
+        {
+        }
+    }
 }

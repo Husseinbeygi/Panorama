@@ -8,8 +8,6 @@
 namespace AForge.Imaging.Filters
 {
     using System;
-    using System.Drawing;
-    using System.Drawing.Imaging;
 
     /// <summary>
     /// Grayscale image using BT709 algorithm.
@@ -28,12 +26,12 @@ namespace AForge.Imaging.Filters
     /// <seealso cref="GrayscaleRMY"/>
     /// <seealso cref="GrayscaleY"/>
     ///
-    [Obsolete( "Use Grayscale.CommonAlgorithms.BT709 object instead" )]
+    [Obsolete("Use Grayscale.CommonAlgorithms.BT709 object instead")]
     public sealed class GrayscaleBT709 : Grayscale
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GrayscaleBT709"/> class.
         /// </summary>
-        public GrayscaleBT709( ) : base( 0.2125, 0.7154, 0.0721 ) { }
+        public GrayscaleBT709() : base(0.2125, 0.7154, 0.0721) { }
     }
 }

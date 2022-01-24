@@ -42,7 +42,7 @@ namespace AForge.Imaging.Filters
         private byte[] table = new byte[256];
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -64,13 +64,13 @@ namespace AForge.Imaging.Filters
             set
             {
                 // get gamma value
-                gamma = Math.Max( 0.1, Math.Min( 5.0, value ) );
+                gamma = Math.Max(0.1, Math.Min(5.0, value));
 
                 // calculate tranformation table
                 double g = 1 / gamma;
-                for ( int i = 0; i < 256; i++ )
+                for (int i = 0; i < 256; i++)
                 {
-                    table[i] = (byte) Math.Min( 255, (int) ( Math.Pow( i / 255.0, g ) * 255 + 0.5 ) );
+                    table[i] = (byte)Math.Min(255, (int)(Math.Pow(i / 255.0, g) * 255 + 0.5));
                 }
             }
         }
@@ -79,7 +79,7 @@ namespace AForge.Imaging.Filters
         /// <summary>
         /// Initializes a new instance of the <see cref="GammaCorrection"/> class.
         /// </summary>
-        public GammaCorrection( ) : this ( 2.2 )
+        public GammaCorrection() : this(2.2)
         {
         }
 
@@ -89,7 +89,7 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="gamma">Gamma value.</param>
         /// 
-        public GammaCorrection( double gamma )
+        public GammaCorrection(double gamma)
         {
             Gamma = gamma;
 
@@ -105,27 +105,27 @@ namespace AForge.Imaging.Filters
         /// <param name="image">Source image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         ///
-        protected override unsafe void ProcessFilter( UnmanagedImage image, Rectangle rect )
+        protected override unsafe void ProcessFilter(UnmanagedImage image, Rectangle rect)
         {
-            int pixelSize = ( image.PixelFormat == PixelFormat.Format8bppIndexed ) ? 1 : 3;
+            int pixelSize = (image.PixelFormat == PixelFormat.Format8bppIndexed) ? 1 : 3;
 
             // processing start and stop X,Y positions
-            int startX  = rect.Left * pixelSize;
-            int startY  = rect.Top;
-            int stopX   = startX + rect.Width * pixelSize;
-            int stopY   = startY + rect.Height;
-            int offset  = image.Stride - rect.Width * pixelSize;
+            int startX = rect.Left * pixelSize;
+            int startY = rect.Top;
+            int stopX = startX + rect.Width * pixelSize;
+            int stopY = startY + rect.Height;
+            int offset = image.Stride - rect.Width * pixelSize;
 
             // do the job
-            byte* ptr = (byte*) image.ImageData.ToPointer( );
+            byte* ptr = (byte*)image.ImageData.ToPointer();
 
             // allign pointer to the first pixel to process
-            ptr += ( startY * image.Stride + startX );
+            ptr += (startY * image.Stride + startX);
 
             // gamma correction
-            for ( int y = startY; y < stopY; y++ )
+            for (int y = startY; y < stopY; y++)
             {
-                for ( int x = startX; x < stopX; x++, ptr++ )
+                for (int x = startX; x < stopX; x++, ptr++)
                 {
                     // process each pixel
                     *ptr = table[*ptr];

@@ -7,7 +7,6 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
@@ -42,7 +41,7 @@ namespace AForge.Imaging.Filters
     public class ResizeNearestNeighbor : BaseResizeFilter
     {
         // format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -59,9 +58,9 @@ namespace AForge.Imaging.Filters
         /// <param name="newWidth">Width of the new image.</param>
         /// <param name="newHeight">Height of the new image.</param>
         /// 
-		public ResizeNearestNeighbor( int newWidth, int newHeight ) :
-            base( newWidth, newHeight )
-		{
+		public ResizeNearestNeighbor(int newWidth, int newHeight) :
+            base(newWidth, newHeight)
+        {
             formatTranslations[PixelFormat.Format8bppIndexed]    = PixelFormat.Format8bppIndexed;
             formatTranslations[PixelFormat.Format24bppRgb]       = PixelFormat.Format24bppRgb;
             formatTranslations[PixelFormat.Format32bppRgb]       = PixelFormat.Format32bppRgb;
@@ -78,35 +77,35 @@ namespace AForge.Imaging.Filters
         /// <param name="sourceData">Source image data.</param>
         /// <param name="destinationData">Destination image data.</param>
         /// 
-        protected override unsafe void ProcessFilter( UnmanagedImage sourceData, UnmanagedImage destinationData )
+        protected override unsafe void ProcessFilter(UnmanagedImage sourceData, UnmanagedImage destinationData)
         {
             // get source image size
-            int width   = sourceData.Width;
-            int height  = sourceData.Height;
+            int width = sourceData.Width;
+            int height = sourceData.Height;
 
-            int pixelSize = Image.GetPixelFormatSize( sourceData.PixelFormat ) / 8;
+            int pixelSize = Image.GetPixelFormatSize(sourceData.PixelFormat) / 8;
             int srcStride = sourceData.Stride;
             int dstStride = destinationData.Stride;
-            double xFactor = (double) width / newWidth;
-            double yFactor = (double) height / newHeight;
+            double xFactor = (double)width / newWidth;
+            double yFactor = (double)height / newHeight;
 
             // do the job
-            byte* baseSrc = (byte*) sourceData.ImageData.ToPointer( );
-            byte* baseDst = (byte*) destinationData.ImageData.ToPointer( );
+            byte* baseSrc = (byte*)sourceData.ImageData.ToPointer();
+            byte* baseDst = (byte*)destinationData.ImageData.ToPointer();
 
             // for each line
-            for ( int y = 0; y < newHeight; y++ )
+            for (int y = 0; y < newHeight; y++)
             {
                 byte* dst = baseDst + dstStride * y;
-                byte* src = baseSrc + srcStride * ( (int) ( y * yFactor ) );
+                byte* src = baseSrc + srcStride * ((int)(y * yFactor));
                 byte* p;
 
                 // for each pixel
-                for ( int x = 0; x < newWidth; x++ )
+                for (int x = 0; x < newWidth; x++)
                 {
-                    p = src + pixelSize * ( (int) ( x * xFactor ) );
+                    p = src + pixelSize * ((int)(x * xFactor));
 
-                    for ( int i = 0; i < pixelSize; i++, dst++, p++ )
+                    for (int i = 0; i < pixelSize; i++, dst++, p++)
                     {
                         *dst = *p;
                     }

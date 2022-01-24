@@ -8,9 +8,7 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
     using System.Collections.Generic;
-    using System.Drawing;
     using System.Drawing.Imaging;
 
     /// <summary>
@@ -47,7 +45,7 @@ namespace AForge.Imaging.Filters
     public class BayerFilter : BaseFilter
     {
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         private bool performDemosaicing = true;
         private int[,] bayerPattern = new int[2, 2] { { RGB.G, RGB.R }, { RGB.B, RGB.G } };
@@ -118,7 +116,7 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="BayerFilter"/> class.
         /// </summary>
         /// 
-        public BayerFilter( )
+        public BayerFilter()
         {
             // initialize format translation dictionary
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format24bppRgb;
@@ -131,13 +129,13 @@ namespace AForge.Imaging.Filters
         /// <param name="sourceData">Source image data.</param>
         /// <param name="destinationData">Destination image data.</param>
         /// 
-        protected override unsafe void ProcessFilter( UnmanagedImage sourceData, UnmanagedImage destinationData )
+        protected override unsafe void ProcessFilter(UnmanagedImage sourceData, UnmanagedImage destinationData)
         {
             // get width and height
-            int width  = sourceData.Width;
+            int width = sourceData.Width;
             int height = sourceData.Height;
 
-            int widthM1  = width - 1;
+            int widthM1 = width - 1;
             int heightM1 = height - 1;
 
             int srcStride = sourceData.Stride;
@@ -146,19 +144,19 @@ namespace AForge.Imaging.Filters
             int dstOffset = destinationData.Stride - width * 3;
 
             // do the job
-            byte * src = (byte*) sourceData.ImageData.ToPointer( );
-            byte * dst = (byte*) destinationData.ImageData.ToPointer( );
+            byte* src = (byte*)sourceData.ImageData.ToPointer();
+            byte* dst = (byte*)destinationData.ImageData.ToPointer();
 
             int[] rgbValues = new int[3];
             int[] rgbCounters = new int[3];
 
-            if ( !performDemosaicing )
+            if (!performDemosaicing)
             {
                 // for each line
-                for ( int y = 0; y < height; y++ )
+                for (int y = 0; y < height; y++)
                 {
                     // for each pixel
-                    for ( int x = 0; x < width; x++, src++, dst += 3 )
+                    for (int x = 0; x < width; x++, src++, dst += 3)
                     {
                         dst[RGB.R] = dst[RGB.G] = dst[RGB.B] = 0;
                         dst[bayerPattern[y & 1, x & 1]] = *src;
@@ -170,10 +168,10 @@ namespace AForge.Imaging.Filters
             else
             {
                 // for each line
-                for ( int y = 0; y < height; y++ )
+                for (int y = 0; y < height; y++)
                 {
                     // for each pixel
-                    for ( int x = 0; x < width; x++, src++, dst += 3 )
+                    for (int x = 0; x < width; x++, src++, dst += 3)
                     {
                         rgbValues[0] = rgbValues[1] = rgbValues[2] = 0;
                         rgbCounters[0] = rgbCounters[1] = rgbCounters[2] = 0;
@@ -183,73 +181,73 @@ namespace AForge.Imaging.Filters
                         rgbValues[bayerIndex] += *src;
                         rgbCounters[bayerIndex]++;
 
-                        if ( x != 0 )
+                        if (x != 0)
                         {
-                            bayerIndex = bayerPattern[y & 1, ( x - 1 ) & 1];
+                            bayerIndex = bayerPattern[y & 1, (x - 1) & 1];
 
                             rgbValues[bayerIndex] += src[-1];
                             rgbCounters[bayerIndex]++;
                         }
 
-                        if ( x != widthM1 )
+                        if (x != widthM1)
                         {
-                            bayerIndex = bayerPattern[y & 1, ( x + 1 ) & 1];
+                            bayerIndex = bayerPattern[y & 1, (x + 1) & 1];
 
                             rgbValues[bayerIndex] += src[1];
                             rgbCounters[bayerIndex]++;
                         }
 
-                        if ( y != 0 )
+                        if (y != 0)
                         {
-                            bayerIndex = bayerPattern[( y - 1 ) & 1, x & 1];
+                            bayerIndex = bayerPattern[(y - 1) & 1, x & 1];
 
                             rgbValues[bayerIndex] += src[-srcStride];
                             rgbCounters[bayerIndex]++;
 
-                            if ( x != 0 )
+                            if (x != 0)
                             {
-                                bayerIndex = bayerPattern[( y - 1 ) & 1, ( x - 1 ) & 1];
+                                bayerIndex = bayerPattern[(y - 1) & 1, (x - 1) & 1];
 
                                 rgbValues[bayerIndex] += src[-srcStride - 1];
                                 rgbCounters[bayerIndex]++;
                             }
 
-                            if ( x != widthM1 )
+                            if (x != widthM1)
                             {
-                                bayerIndex = bayerPattern[( y - 1 ) & 1, ( x + 1 ) & 1];
+                                bayerIndex = bayerPattern[(y - 1) & 1, (x + 1) & 1];
 
                                 rgbValues[bayerIndex] += src[-srcStride + 1];
                                 rgbCounters[bayerIndex]++;
                             }
                         }
 
-                        if ( y != heightM1 )
+                        if (y != heightM1)
                         {
-                            bayerIndex = bayerPattern[( y + 1 ) & 1, x & 1];
+                            bayerIndex = bayerPattern[(y + 1) & 1, x & 1];
 
                             rgbValues[bayerIndex] += src[srcStride];
                             rgbCounters[bayerIndex]++;
 
-                            if ( x != 0 )
+                            if (x != 0)
                             {
-                                bayerIndex = bayerPattern[( y + 1 ) & 1, ( x - 1 ) & 1];
+                                bayerIndex = bayerPattern[(y + 1) & 1, (x - 1) & 1];
 
                                 rgbValues[bayerIndex] += src[srcStride - 1];
                                 rgbCounters[bayerIndex]++;
                             }
 
-                            if ( x != widthM1 )
+                            if (x != widthM1)
                             {
-                                bayerIndex = bayerPattern[( y + 1 ) & 1, ( x + 1 ) & 1];
+                                bayerIndex = bayerPattern[(y + 1) & 1, (x + 1) & 1];
 
                                 rgbValues[bayerIndex] += src[srcStride + 1];
                                 rgbCounters[bayerIndex]++;
                             }
                         }
 
-                        dst[RGB.R] = (byte) ( rgbValues[RGB.R] / rgbCounters[RGB.R] );
-                        dst[RGB.G] = (byte) ( rgbValues[RGB.G] / rgbCounters[RGB.G] );
-                        dst[RGB.B] = (byte) ( rgbValues[RGB.B] / rgbCounters[RGB.B] );
+                        dst[RGB.R] = (byte)(rgbValues[RGB.R] / rgbCounters[RGB.R]);
+                        dst[RGB.G] = (byte)(rgbValues[RGB.G] / rgbCounters[RGB.G]);
+                        dst[RGB.B] = (byte)(rgbValues[RGB.B] / rgbCounters[RGB.B]);
                     }
                     src += srcOffset;
                     dst += dstOffset;

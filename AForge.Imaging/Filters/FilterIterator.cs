@@ -74,8 +74,8 @@ namespace AForge.Imaging.Filters
     /// 
     public class FilterIterator : IFilter, IFilterInformation
     {
-        private IFilter	baseFilter;
-        private int		iterations = 1;
+        private IFilter baseFilter;
+        private int iterations = 1;
 
         /// <summary>
         /// Format translations dictionary.
@@ -90,7 +90,7 @@ namespace AForge.Imaging.Filters
         /// 
         public Dictionary<PixelFormat, PixelFormat> FormatTranslations
         {
-            get { return ( (IFilterInformation) baseFilter).FormatTranslations; }
+            get { return ((IFilterInformation)baseFilter).FormatTranslations; }
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace AForge.Imaging.Filters
         public int Iterations
         {
             get { return iterations; }
-            set { iterations = Math.Max( 1, Math.Min( 255, value ) ); }
+            set { iterations = Math.Max(1, Math.Min(255, value)); }
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="baseFilter">Filter to iterate.</param>
         /// 
-        public FilterIterator( IFilter baseFilter )
+        public FilterIterator(IFilter baseFilter)
         {
             this.baseFilter = baseFilter;
         }
@@ -139,7 +139,7 @@ namespace AForge.Imaging.Filters
         /// <param name="baseFilter">Filter to iterate.</param>
         /// <param name="iterations">Iterations amount.</param>
         /// 
-        public FilterIterator( IFilter baseFilter, int iterations )
+        public FilterIterator(IFilter baseFilter, int iterations)
         {
             this.baseFilter = baseFilter;
             this.iterations = iterations;
@@ -157,18 +157,18 @@ namespace AForge.Imaging.Filters
         /// <remarks>The method keeps the source image unchanged and returns
         /// the result of image processing filter as new image.</remarks> 
         ///
-        public Bitmap Apply( Bitmap image )
+        public Bitmap Apply(Bitmap image)
         {
             // lock source bitmap data
             BitmapData imageData = image.LockBits(
-                new Rectangle( 0, 0, image.Width, image.Height ),
-                ImageLockMode.ReadOnly, image.PixelFormat );
+                new Rectangle(0, 0, image.Width, image.Height),
+                ImageLockMode.ReadOnly, image.PixelFormat);
 
             // apply the filter
-            Bitmap dstImage = Apply( imageData );
+            Bitmap dstImage = Apply(imageData);
 
             // unlock source image
-            image.UnlockBits( imageData );
+            image.UnlockBits(imageData);
 
             return dstImage;
         }
@@ -186,18 +186,18 @@ namespace AForge.Imaging.Filters
         /// of image processing filter as new image. The source image data are kept
         /// unchanged.</remarks>
         /// 
-        public Bitmap Apply( BitmapData imageData )
+        public Bitmap Apply(BitmapData imageData)
         {
             // initial iteration
-            Bitmap dstImg = baseFilter.Apply( imageData );
+            Bitmap dstImg = baseFilter.Apply(imageData);
             Bitmap tmpImg;
 
             // continue to iterate
-            for ( int i = 1; i < iterations; i++ )
+            for (int i = 1; i < iterations; i++)
             {
                 tmpImg = dstImg;
-                dstImg = baseFilter.Apply( tmpImg );
-                tmpImg.Dispose( );
+                dstImg = baseFilter.Apply(tmpImg);
+                tmpImg.Dispose();
             }
 
             return dstImg;
@@ -215,18 +215,18 @@ namespace AForge.Imaging.Filters
         /// <remarks>The method keeps the source image unchanged and returns
         /// the result of image processing filter as new image.</remarks>
         /// 
-        public UnmanagedImage Apply( UnmanagedImage image )
+        public UnmanagedImage Apply(UnmanagedImage image)
         {
             // initial iteration
-            UnmanagedImage dstImg = baseFilter.Apply( image );
+            UnmanagedImage dstImg = baseFilter.Apply(image);
             UnmanagedImage tmpImg;
 
             // continue to iterate
-            for ( int i = 1; i < iterations; i++ )
+            for (int i = 1; i < iterations; i++)
             {
                 tmpImg = dstImg;
-                dstImg = baseFilter.Apply( tmpImg );
-                tmpImg.Dispose( );
+                dstImg = baseFilter.Apply(tmpImg);
+                tmpImg.Dispose();
             }
 
             return dstImg;
@@ -247,29 +247,29 @@ namespace AForge.Imaging.Filters
         /// <see cref="FormatTranslations"/> property for information about pixel format conversions).</note></para>
         /// </remarks>
         /// 
-        public void Apply( UnmanagedImage sourceImage, UnmanagedImage destinationImage )
+        public void Apply(UnmanagedImage sourceImage, UnmanagedImage destinationImage)
         {
-            if ( iterations == 1 )
+            if (iterations == 1)
             {
-                baseFilter.Apply( sourceImage, destinationImage );
+                baseFilter.Apply(sourceImage, destinationImage);
             }
             else
             {
                 // initial iteration
-                UnmanagedImage dstImg = baseFilter.Apply( sourceImage );
+                UnmanagedImage dstImg = baseFilter.Apply(sourceImage);
                 UnmanagedImage tmpImg;
 
                 iterations--;
                 // continue to iterate
-                for ( int i = 1; i < iterations; i++ )
+                for (int i = 1; i < iterations; i++)
                 {
                     tmpImg = dstImg;
-                    dstImg = baseFilter.Apply( tmpImg );
-                    tmpImg.Dispose( );
+                    dstImg = baseFilter.Apply(tmpImg);
+                    tmpImg.Dispose();
                 }
 
                 // put result of last iteration into the specified destination
-                baseFilter.Apply( dstImg, destinationImage );
+                baseFilter.Apply(dstImg, destinationImage);
             }
         }
     }

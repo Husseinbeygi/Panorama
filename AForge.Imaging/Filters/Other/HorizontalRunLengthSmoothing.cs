@@ -65,7 +65,7 @@ namespace AForge.Imaging.Filters
         public int MaxGapSize
         {
             get { return maxGapSize; }
-            set { maxGapSize = Math.Max( 1, Math.Min( 1000, value ) ); }
+            set { maxGapSize = Math.Max(1, Math.Min(1000, value)); }
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace AForge.Imaging.Filters
         }
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -103,7 +103,7 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="HorizontalRunLengthSmoothing"/> class.
         /// </summary>
         /// 
-        public HorizontalRunLengthSmoothing( )
+        public HorizontalRunLengthSmoothing()
         {
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
         }
@@ -114,7 +114,7 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="maxGapSize">Maximum gap size to fill (see <see cref="MaxGapSize"/>).</param>
         /// 
-        public HorizontalRunLengthSmoothing( int maxGapSize ) : this( )
+        public HorizontalRunLengthSmoothing(int maxGapSize) : this()
         {
             MaxGapSize = maxGapSize;
         }
@@ -126,38 +126,38 @@ namespace AForge.Imaging.Filters
         /// <param name="image">Source image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         ///
-        protected override unsafe void ProcessFilter( UnmanagedImage image, Rectangle rect )
+        protected override unsafe void ProcessFilter(UnmanagedImage image, Rectangle rect)
         {
             int startY = rect.Top;
-            int stopY  = startY + rect.Height;
-            int width  = rect.Width;
+            int stopY = startY + rect.Height;
+            int width = rect.Width;
             int offset = image.Stride - rect.Width;
 
-            byte* ptr = (byte*) image.ImageData.ToPointer( ) + startY * image.Stride + rect.Left;
+            byte* ptr = (byte*)image.ImageData.ToPointer() + startY * image.Stride + rect.Left;
 
-            for ( int y = startY; y < stopY; y++ )
+            for (int y = startY; y < stopY; y++)
             {
                 byte* lineStart = ptr;
                 byte* lineEndPtr = ptr + width;
-                
+
                 // fill gaps between white pixels
-                while ( ptr < lineEndPtr )
+                while (ptr < lineEndPtr)
                 {
                     byte* gapStart = ptr;
 
                     // look for non black pixel
-                    while ( ( ptr < lineEndPtr ) && ( *ptr == 0 ) )
+                    while ((ptr < lineEndPtr) && (*ptr == 0))
                     {
                         ptr++;
                     }
 
                     // fill the gap between white areas
-                    if ( ptr - gapStart <= maxGapSize )
+                    if (ptr - gapStart <= maxGapSize)
                     {
-                        if ( ( processGapsWithImageBorders ) ||
-                           ( ( gapStart != lineStart ) && ( ptr != lineEndPtr ) ) )
+                        if ((processGapsWithImageBorders) ||
+                           ((gapStart != lineStart) && (ptr != lineEndPtr)))
                         {
-                            while ( gapStart < ptr )
+                            while (gapStart < ptr)
                             {
                                 *gapStart = 255;
                                 gapStart++;
@@ -166,7 +166,7 @@ namespace AForge.Imaging.Filters
                     }
 
                     // skip all non black pixels
-                    while ( ( ptr < lineEndPtr ) && ( *ptr != 0 ) )
+                    while ((ptr < lineEndPtr) && (*ptr != 0))
                     {
                         ptr++;
                     }

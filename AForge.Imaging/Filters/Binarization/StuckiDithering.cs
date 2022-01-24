@@ -9,10 +9,6 @@
 //
 namespace AForge.Imaging.Filters
 {
-    using System;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-
     /// <summary>
     /// Dithering using Stucki error diffusion.
     /// </summary>
@@ -55,11 +51,11 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="StuckiDithering"/> class.
         /// </summary>
         /// 
-        public StuckiDithering( ) : base( new int[3][] {
+        public StuckiDithering() : base(new int[3][] {
             new int[2] { 8, 4 },
             new int[5] { 2, 4, 8, 4, 2 },
             new int[5] { 1, 2, 4, 2, 1 }
-        } )
+        })
         {
         }
     }

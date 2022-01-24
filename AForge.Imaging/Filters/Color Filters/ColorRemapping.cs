@@ -11,7 +11,6 @@ namespace AForge.Imaging.Filters
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
-    using AForge;
 
     /// <summary>
     /// Color remapping.
@@ -54,7 +53,7 @@ namespace AForge.Imaging.Filters
         private byte[] grayMap;
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -79,8 +78,8 @@ namespace AForge.Imaging.Filters
             set
             {
                 // check the map
-                if ( ( value == null ) || ( value.Length != 256 ) )
-                    throw new ArgumentException( "A map should be array with 256 value." );
+                if ((value == null) || (value.Length != 256))
+                    throw new ArgumentException("A map should be array with 256 value.");
 
                 redMap = value;
             }
@@ -101,8 +100,8 @@ namespace AForge.Imaging.Filters
             set
             {
                 // check the map
-                if ( ( value == null ) || ( value.Length != 256 ) )
-                    throw new ArgumentException( "A map should be array with 256 value." );
+                if ((value == null) || (value.Length != 256))
+                    throw new ArgumentException("A map should be array with 256 value.");
 
                 greenMap = value;
             }
@@ -123,8 +122,8 @@ namespace AForge.Imaging.Filters
             set
             {
                 // check the map
-                if ( ( value == null ) || ( value.Length != 256 ) )
-                    throw new ArgumentException( "A map should be array with 256 value." );
+                if ((value == null) || (value.Length != 256))
+                    throw new ArgumentException("A map should be array with 256 value.");
 
                 blueMap = value;
             }
@@ -147,8 +146,8 @@ namespace AForge.Imaging.Filters
             set
             {
                 // check the map
-                if ( ( value == null ) || ( value.Length != 256 ) )
-                    throw new ArgumentException( "A map should be array with 256 value." );
+                if ((value == null) || (value.Length != 256))
+                    throw new ArgumentException("A map should be array with 256 value.");
 
                 grayMap = value;
             }
@@ -161,7 +160,7 @@ namespace AForge.Imaging.Filters
         /// <remarks>Initializes the filter without any remapping. All
         /// pixel values are mapped to the same values.</remarks>
         /// 
-        public ColorRemapping( )
+        public ColorRemapping()
         {
             redMap      = new byte[256];
             greenMap    = new byte[256];
@@ -169,9 +168,9 @@ namespace AForge.Imaging.Filters
             grayMap     = new byte[256];
 
             // fill the maps
-            for ( int i = 0; i < 256; i++ )
+            for (int i = 0; i < 256; i++)
             {
-                redMap[i] = greenMap[i] = blueMap[i] = grayMap[i] = (byte) i;
+                redMap[i] = greenMap[i] = blueMap[i] = grayMap[i] = (byte)i;
             }
 
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
@@ -188,7 +187,7 @@ namespace AForge.Imaging.Filters
         /// <param name="greenMap">Green map.</param>
         /// <param name="blueMap">Blue map.</param>
         /// 
-        public ColorRemapping( byte[] redMap, byte[] greenMap, byte[] blueMap ) : this( )
+        public ColorRemapping(byte[] redMap, byte[] greenMap, byte[] blueMap) : this()
         {
             RedMap      = redMap;
             GreenMap    = greenMap;
@@ -203,7 +202,7 @@ namespace AForge.Imaging.Filters
         /// 
         /// <remarks>This constructor is supposed for grayscale images.</remarks>
         /// 
-        public ColorRemapping( byte[] grayMap ) : this( )
+        public ColorRemapping(byte[] grayMap) : this()
         {
             GrayMap = grayMap;
         }
@@ -215,29 +214,29 @@ namespace AForge.Imaging.Filters
         /// <param name="image">Source image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         ///
-        protected override unsafe void ProcessFilter( UnmanagedImage image, Rectangle rect )
+        protected override unsafe void ProcessFilter(UnmanagedImage image, Rectangle rect)
         {
-            int pixelSize = Image.GetPixelFormatSize( image.PixelFormat ) / 8;
+            int pixelSize = Image.GetPixelFormatSize(image.PixelFormat) / 8;
 
             // processing start and stop X,Y positions
-            int startX  = rect.Left;
-            int startY  = rect.Top;
-            int stopX   = startX + rect.Width;
-            int stopY   = startY + rect.Height;
-            int offset  = image.Stride - rect.Width * pixelSize;
+            int startX = rect.Left;
+            int startY = rect.Top;
+            int stopX = startX + rect.Width;
+            int stopY = startY + rect.Height;
+            int offset = image.Stride - rect.Width * pixelSize;
 
             // do the job
-            byte* ptr = (byte*) image.ImageData.ToPointer( );
+            byte* ptr = (byte*)image.ImageData.ToPointer();
 
             // allign pointer to the first pixel to process
-            ptr += ( startY * image.Stride + startX * pixelSize );
+            ptr += (startY * image.Stride + startX * pixelSize);
 
-            if ( image.PixelFormat == PixelFormat.Format8bppIndexed )
+            if (image.PixelFormat == PixelFormat.Format8bppIndexed)
             {
                 // grayscale image
-                for ( int y = startY; y < stopY; y++ )
+                for (int y = startY; y < stopY; y++)
                 {
-                    for ( int x = startX; x < stopX; x++, ptr++ )
+                    for (int x = startX; x < stopX; x++, ptr++)
                     {
                         // gray
                         *ptr = grayMap[*ptr];
@@ -248,9 +247,9 @@ namespace AForge.Imaging.Filters
             else
             {
                 // RGB image
-                for ( int y = startY; y < stopY; y++ )
+                for (int y = startY; y < stopY; y++)
                 {
-                    for ( int x = startX; x < stopX; x++, ptr += pixelSize )
+                    for (int x = startX; x < stopX; x++, ptr += pixelSize)
                     {
                         // red
                         ptr[RGB.R] = redMap[ptr[RGB.R]];

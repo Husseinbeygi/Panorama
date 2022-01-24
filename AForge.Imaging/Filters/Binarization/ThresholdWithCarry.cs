@@ -7,7 +7,6 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
@@ -46,7 +45,7 @@ namespace AForge.Imaging.Filters
         private byte threshold = 128;
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -72,7 +71,7 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="ThresholdWithCarry"/> class.
         /// </summary>
         /// 
-        public ThresholdWithCarry( )
+        public ThresholdWithCarry()
         {
             // initialize format translation dictionary
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
@@ -84,8 +83,8 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="threshold">Threshold value.</param>
         /// 
-        public ThresholdWithCarry( byte threshold )
-            : this( )
+        public ThresholdWithCarry(byte threshold)
+            : this()
         {
             this.threshold = threshold;
         }
@@ -97,41 +96,41 @@ namespace AForge.Imaging.Filters
         /// <param name="image">Source image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         /// 
-        protected override unsafe void ProcessFilter( UnmanagedImage image, Rectangle rect )
+        protected override unsafe void ProcessFilter(UnmanagedImage image, Rectangle rect)
         {
-            int startX  = rect.Left;
-            int startY  = rect.Top;
-            int stopX   = startX + rect.Width;
-            int stopY   = startY + rect.Height;
-            int offset  = image.Stride - rect.Width;
+            int startX = rect.Left;
+            int startY = rect.Top;
+            int stopX = startX + rect.Width;
+            int stopY = startY + rect.Height;
+            int offset = image.Stride - rect.Width;
 
             // value which is caried from pixel to pixel
             short carry = 0;
 
             // do the job
-            byte* ptr = (byte*) image.ImageData.ToPointer( );
+            byte* ptr = (byte*)image.ImageData.ToPointer();
 
             // allign pointer to the first pixel to process
-            ptr += ( startY * image.Stride + startX );
+            ptr += (startY * image.Stride + startX);
 
             // for each line	
-            for ( int y = startY; y < stopY; y++ )
+            for (int y = startY; y < stopY; y++)
             {
                 carry = 0;
 
                 // for each pixel
-                for ( int x = startX; x < stopX; x++, ptr++ )
+                for (int x = startX; x < stopX; x++, ptr++)
                 {
                     carry += *ptr;
 
-                    if ( carry >= threshold )
+                    if (carry >= threshold)
                     {
-                        *ptr = (byte) 255;
+                        *ptr = (byte)255;
                         carry -= 255;
                     }
                     else
                     {
-                        *ptr = (byte) 0;
+                        *ptr = (byte)0;
                     }
                 }
                 ptr += offset;

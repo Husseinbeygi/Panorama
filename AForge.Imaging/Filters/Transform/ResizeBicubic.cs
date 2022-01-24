@@ -10,7 +10,6 @@ namespace AForge.Imaging.Filters
 {
     using System;
     using System.Collections.Generic;
-    using System.Drawing;
     using System.Drawing.Imaging;
 
     /// <summary>
@@ -45,7 +44,7 @@ namespace AForge.Imaging.Filters
     public class ResizeBicubic : BaseResizeFilter
     {
         // format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -54,7 +53,7 @@ namespace AForge.Imaging.Filters
         {
             get { return formatTranslations; }
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ResizeBicubic"/> class.
         /// </summary>
@@ -62,8 +61,8 @@ namespace AForge.Imaging.Filters
         /// <param name="newWidth">Width of new image.</param>
         /// <param name="newHeight">Height of new image.</param>
         /// 
-		public ResizeBicubic( int newWidth, int newHeight ) :
-            base( newWidth, newHeight )
+        public ResizeBicubic(int newWidth, int newHeight) :
+            base(newWidth, newHeight)
         {
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
             formatTranslations[PixelFormat.Format24bppRgb]    = PixelFormat.Format24bppRgb;
@@ -76,25 +75,25 @@ namespace AForge.Imaging.Filters
         /// <param name="sourceData">Source image data.</param>
         /// <param name="destinationData">Destination image data.</param>
         /// 
-        protected override unsafe void ProcessFilter( UnmanagedImage sourceData, UnmanagedImage destinationData )
+        protected override unsafe void ProcessFilter(UnmanagedImage sourceData, UnmanagedImage destinationData)
         {
             // get source image size
-            int width   = sourceData.Width;
-            int height  = sourceData.Height;
+            int width = sourceData.Width;
+            int height = sourceData.Height;
 
-            int pixelSize = ( sourceData.PixelFormat == PixelFormat.Format8bppIndexed ) ? 1 : 3;
+            int pixelSize = (sourceData.PixelFormat == PixelFormat.Format8bppIndexed) ? 1 : 3;
             int srcStride = sourceData.Stride;
             int dstOffset = destinationData.Stride - pixelSize * newWidth;
-            double xFactor = (double) width / newWidth;
-            double yFactor = (double) height / newHeight;
+            double xFactor = (double)width / newWidth;
+            double yFactor = (double)height / newHeight;
 
             // do the job
-            byte* src = (byte*) sourceData.ImageData.ToPointer( );
-            byte* dst = (byte*) destinationData.ImageData.ToPointer( );
+            byte* src = (byte*)sourceData.ImageData.ToPointer();
+            byte* dst = (byte*)destinationData.ImageData.ToPointer();
 
             // coordinates of source points and cooefficiens
-            double  ox, oy, dx, dy, k1, k2;
-            int     ox1, oy1, ox2, oy2;
+            double ox, oy, dx, dy, k1, k2;
+            int ox1, oy1, ox2, oy2;
             // destination pixel values
             double r, g, b;
             // width and height decreased by 1
@@ -104,52 +103,52 @@ namespace AForge.Imaging.Filters
             byte* p;
 
             // check pixel format
-            if ( destinationData.PixelFormat == PixelFormat.Format8bppIndexed )
+            if (destinationData.PixelFormat == PixelFormat.Format8bppIndexed)
             {
                 // grayscale
-                for ( int y = 0; y < newHeight; y++ )
+                for (int y = 0; y < newHeight; y++)
                 {
                     // Y coordinates
-                    oy  = (double) y * yFactor - 0.5;
-                    oy1 = (int) oy;
-                    dy  = oy - (double) oy1;
+                    oy  = (double)y * yFactor - 0.5;
+                    oy1 = (int)oy;
+                    dy  = oy - (double)oy1;
 
-                    for ( int x = 0; x < newWidth; x++, dst++ )
+                    for (int x = 0; x < newWidth; x++, dst++)
                     {
                         // X coordinates
-                        ox  = (double) x * xFactor - 0.5f;
-                        ox1 = (int) ox;
-                        dx  = ox - (double) ox1;
+                        ox  = (double)x * xFactor - 0.5f;
+                        ox1 = (int)ox;
+                        dx  = ox - (double)ox1;
 
                         // initial pixel value
                         g = 0;
 
-                        for ( int n = -1; n < 3; n++ )
+                        for (int n = -1; n < 3; n++)
                         {
                             // get Y cooefficient
-                            k1 = Interpolation.BiCubicKernel( dy - (double) n );
+                            k1 = Interpolation.BiCubicKernel(dy - (double)n);
 
                             oy2 = oy1 + n;
-                            if ( oy2 < 0 )
+                            if (oy2 < 0)
                                 oy2 = 0;
-                            if ( oy2 > ymax )
+                            if (oy2 > ymax)
                                 oy2 = ymax;
 
-                            for ( int m = -1; m < 3; m++ )
+                            for (int m = -1; m < 3; m++)
                             {
                                 // get X cooefficient
-                                k2 = k1 * Interpolation.BiCubicKernel( (double) m - dx );
+                                k2 = k1 * Interpolation.BiCubicKernel((double)m - dx);
 
                                 ox2 = ox1 + m;
-                                if ( ox2 < 0 )
+                                if (ox2 < 0)
                                     ox2 = 0;
-                                if ( ox2 > xmax )
+                                if (ox2 > xmax)
                                     ox2 = xmax;
 
                                 g += k2 * src[oy2 * srcStride + ox2];
                             }
                         }
-                        *dst = (byte) Math.Max( 0, Math.Min( 255, g ) );
+                        *dst = (byte)Math.Max(0, Math.Min(255, g));
                     }
                     dst += dstOffset;
                 }
@@ -157,43 +156,43 @@ namespace AForge.Imaging.Filters
             else
             {
                 // RGB
-                for ( int y = 0; y < newHeight; y++ )
+                for (int y = 0; y < newHeight; y++)
                 {
                     // Y coordinates
-                    oy  = (double) y * yFactor - 0.5f;
-                    oy1 = (int) oy;
-                    dy  = oy - (double) oy1;
+                    oy  = (double)y * yFactor - 0.5f;
+                    oy1 = (int)oy;
+                    dy  = oy - (double)oy1;
 
-                    for ( int x = 0; x < newWidth; x++, dst += 3 )
+                    for (int x = 0; x < newWidth; x++, dst += 3)
                     {
                         // X coordinates
-                        ox  = (double) x * xFactor - 0.5f;
-                        ox1 = (int) ox;
-                        dx  = ox - (double) ox1;
+                        ox  = (double)x * xFactor - 0.5f;
+                        ox1 = (int)ox;
+                        dx  = ox - (double)ox1;
 
                         // initial pixel value
                         r = g = b = 0;
 
-                        for ( int n = -1; n < 3; n++ )
+                        for (int n = -1; n < 3; n++)
                         {
                             // get Y cooefficient
-                            k1 = Interpolation.BiCubicKernel( dy - (double) n );
+                            k1 = Interpolation.BiCubicKernel(dy - (double)n);
 
                             oy2 = oy1 + n;
-                            if ( oy2 < 0 )
+                            if (oy2 < 0)
                                 oy2 = 0;
-                            if ( oy2 > ymax )
+                            if (oy2 > ymax)
                                 oy2 = ymax;
 
-                            for ( int m = -1; m < 3; m++ )
+                            for (int m = -1; m < 3; m++)
                             {
                                 // get X cooefficient
-                                k2 = k1 * Interpolation.BiCubicKernel( (double) m - dx );
+                                k2 = k1 * Interpolation.BiCubicKernel((double)m - dx);
 
                                 ox2 = ox1 + m;
-                                if ( ox2 < 0 )
+                                if (ox2 < 0)
                                     ox2 = 0;
-                                if ( ox2 > xmax )
+                                if (ox2 > xmax)
                                     ox2 = xmax;
 
                                 // get pixel of original image
@@ -205,9 +204,9 @@ namespace AForge.Imaging.Filters
                             }
                         }
 
-                        dst[RGB.R] = (byte) Math.Max( 0, Math.Min( 255, r ) );
-                        dst[RGB.G] = (byte) Math.Max( 0, Math.Min( 255, g ) );
-                        dst[RGB.B] = (byte) Math.Max( 0, Math.Min( 255, b ) );
+                        dst[RGB.R] = (byte)Math.Max(0, Math.Min(255, r));
+                        dst[RGB.G] = (byte)Math.Max(0, Math.Min(255, g));
+                        dst[RGB.B] = (byte)Math.Max(0, Math.Min(255, b));
                     }
                     dst += dstOffset;
                 }

@@ -66,7 +66,7 @@ namespace AForge.Imaging.Filters
     public class ImageWarp : BaseFilter
     {
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         private IntPoint[,] warpMap = null;
 
@@ -94,8 +94,8 @@ namespace AForge.Imaging.Filters
             get { return warpMap; }
             set
             {
-                if ( value == null )
-                    throw new NullReferenceException( "Warp map can not be set to null." );
+                if (value == null)
+                    throw new NullReferenceException("Warp map can not be set to null.");
 
                 warpMap = value;
             }
@@ -119,7 +119,7 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="warpMap">Map used for warping images (see <see cref="WarpMap"/>).</param>
         /// 
-        public ImageWarp( IntPoint[,] warpMap )
+        public ImageWarp(IntPoint[,] warpMap)
         {
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
             formatTranslations[PixelFormat.Format24bppRgb]    = PixelFormat.Format24bppRgb;
@@ -136,16 +136,16 @@ namespace AForge.Imaging.Filters
         /// <param name="source">Source image data.</param>
         /// <param name="destination">Destination image data.</param>
         /// 
-        protected override unsafe void ProcessFilter( UnmanagedImage source, UnmanagedImage destination )
+        protected override unsafe void ProcessFilter(UnmanagedImage source, UnmanagedImage destination)
         {
-            int pixelSize = Image.GetPixelFormatSize( source.PixelFormat ) / 8;
+            int pixelSize = Image.GetPixelFormatSize(source.PixelFormat) / 8;
 
             // image width and height
-            int width  = source.Width;
+            int width = source.Width;
             int height = source.Height;
 
-            int widthToProcess  = Math.Min( width,  warpMap.GetLength( 1 ) );
-            int heightToProcess = Math.Min( height, warpMap.GetLength( 0 ) );
+            int widthToProcess = Math.Min(width, warpMap.GetLength(1));
+            int heightToProcess = Math.Min(height, warpMap.GetLength(0));
 
             int srcStride = source.Stride;
             int dstStride = destination.Stride;
@@ -154,33 +154,33 @@ namespace AForge.Imaging.Filters
             // new pixel's position
             int ox, oy;
 
-            byte* src = (byte*) source.ImageData.ToPointer( );
-            byte* dst = (byte*) destination.ImageData.ToPointer( );
+            byte* src = (byte*)source.ImageData.ToPointer();
+            byte* dst = (byte*)destination.ImageData.ToPointer();
             byte* p;
 
             // for each line
-            for ( int y = 0; y < heightToProcess; y++ )
+            for (int y = 0; y < heightToProcess; y++)
             {
                 // for each pixel
-                for ( int x = 0; x < widthToProcess; x++ )
+                for (int x = 0; x < widthToProcess; x++)
                 {
                     // get original pixel's coordinates
                     ox = x + warpMap[y, x].X;
                     oy = y + warpMap[y, x].Y;
 
                     // check if the random pixel is inside of image
-                    if ( ( ox >= 0 ) && ( oy >= 0 ) && ( ox < width ) && ( oy < height ) )
+                    if ((ox >= 0) && (oy >= 0) && (ox < width) && (oy < height))
                     {
                         p = src + oy * srcStride + ox * pixelSize;
 
-                        for ( int i = 0; i < pixelSize; i++, dst++, p++ )
+                        for (int i = 0; i < pixelSize; i++, dst++, p++)
                         {
                             *dst = *p;
                         }
                     }
                     else
                     {
-                        for ( int i = 0; i < pixelSize; i++, dst++ )
+                        for (int i = 0; i < pixelSize; i++, dst++)
                         {
                             *dst = 0;
                         }
@@ -188,18 +188,18 @@ namespace AForge.Imaging.Filters
                 }
 
                 // copy remaining pixel in the row
-                if ( width != widthToProcess )
+                if (width != widthToProcess)
                 {
-                    AForge.SystemTools.CopyUnmanagedMemory( dst, src + y * srcStride + widthToProcess * pixelSize, ( width - widthToProcess ) * pixelSize );
+                    AForge.SystemTools.CopyUnmanagedMemory(dst, src + y * srcStride + widthToProcess * pixelSize, (width - widthToProcess) * pixelSize);
                 }
 
                 dst += dstOffset;
             }
 
             // copy remaining rows of pixels
-            for ( int y = heightToProcess; y < height; y++, dst += dstStride )
+            for (int y = heightToProcess; y < height; y++, dst += dstStride)
             {
-                AForge.SystemTools.CopyUnmanagedMemory( dst, src + y * srcStride, width * pixelSize );
+                AForge.SystemTools.CopyUnmanagedMemory(dst, src + y * srcStride, width * pixelSize);
             }
         }
     }

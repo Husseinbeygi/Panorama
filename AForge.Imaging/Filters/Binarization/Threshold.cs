@@ -7,7 +7,6 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
@@ -49,7 +48,7 @@ namespace AForge.Imaging.Filters
         protected int threshold = 128;
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -75,7 +74,7 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="Threshold"/> class.
         /// </summary>
         /// 
-        public Threshold( )
+        public Threshold()
         {
             // initialize format translation dictionary
             formatTranslations[PixelFormat.Format8bppIndexed]    = PixelFormat.Format8bppIndexed;
@@ -88,8 +87,8 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="threshold">Threshold value.</param>
         /// 
-        public Threshold( int threshold )
-            : this( )
+        public Threshold(int threshold)
+            : this()
         {
             this.threshold = threshold;
         }
@@ -101,48 +100,48 @@ namespace AForge.Imaging.Filters
         /// <param name="image">Source image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         /// 
-        protected override unsafe void ProcessFilter( UnmanagedImage image, Rectangle rect )
+        protected override unsafe void ProcessFilter(UnmanagedImage image, Rectangle rect)
         {
-            int startX  = rect.Left;
-            int startY  = rect.Top;
-            int stopX   = startX + rect.Width;
-            int stopY   = startY + rect.Height;
+            int startX = rect.Left;
+            int startY = rect.Top;
+            int stopX = startX + rect.Width;
+            int stopY = startY + rect.Height;
 
-            if ( image.PixelFormat == PixelFormat.Format8bppIndexed )
+            if (image.PixelFormat == PixelFormat.Format8bppIndexed)
             {
                 int offset = image.Stride - rect.Width;
 
                 // do the job
-                byte* ptr = (byte*) image.ImageData.ToPointer( );
+                byte* ptr = (byte*)image.ImageData.ToPointer();
 
                 // allign pointer to the first pixel to process
-                ptr += ( startY * image.Stride + startX );
+                ptr += (startY * image.Stride + startX);
 
                 // for each line	
-                for ( int y = startY; y < stopY; y++ )
+                for (int y = startY; y < stopY; y++)
                 {
                     // for each pixel
-                    for ( int x = startX; x < stopX; x++, ptr++ )
+                    for (int x = startX; x < stopX; x++, ptr++)
                     {
-                        *ptr = (byte) ( ( *ptr >= threshold ) ? 255 : 0 );
+                        *ptr = (byte)((*ptr >= threshold) ? 255 : 0);
                     }
                     ptr += offset;
                 }
             }
             else
             {
-                byte* basePtr = (byte*) image.ImageData.ToPointer( ) + startX * 2;
+                byte* basePtr = (byte*)image.ImageData.ToPointer() + startX * 2;
                 int stride = image.Stride;
 
                 // for each line	
-                for ( int y = startY; y < stopY; y++ )
+                for (int y = startY; y < stopY; y++)
                 {
-                    ushort* ptr = (ushort*) ( basePtr + stride * y );
+                    ushort* ptr = (ushort*)(basePtr + stride * y);
 
                     // for each pixel
-                    for ( int x = startX; x < stopX; x++, ptr++ )
+                    for (int x = startX; x < stopX; x++, ptr++)
                     {
-                        *ptr = (ushort) ( ( *ptr >= threshold ) ? 65535 : 0 );
+                        *ptr = (ushort)((*ptr >= threshold) ? 65535 : 0);
                     }
                 }
             }

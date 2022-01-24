@@ -8,10 +8,6 @@
 
 namespace AForge.Imaging.ColorReduction
 {
-    using System;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-
     /// <summary>
     /// Color dithering using Stucki error diffusion.
     /// </summary>
@@ -62,11 +58,11 @@ namespace AForge.Imaging.ColorReduction
         /// Initializes a new instance of the <see cref="StuckiColorDithering"/> class.
         /// </summary>
         /// 
-        public StuckiColorDithering( )
-            : base( new int[3][] {
+        public StuckiColorDithering()
+            : base(new int[3][] {
                 new int[2] { 8, 4 },
                 new int[5] { 2, 4, 8, 4, 2 },
-                new int[5] { 1, 2, 4, 2, 1 } } )
+                new int[5] { 1, 2, 4, 2, 1 } })
         {
         }
     }

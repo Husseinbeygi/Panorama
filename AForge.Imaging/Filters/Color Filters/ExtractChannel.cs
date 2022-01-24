@@ -46,7 +46,7 @@ namespace AForge.Imaging.Filters
         private short channel = RGB.R;
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -70,11 +70,11 @@ namespace AForge.Imaging.Filters
             set
             {
                 if (
-                    ( value != RGB.R ) && ( value != RGB.G ) &&
-                    ( value != RGB.B ) && ( value != RGB.A )
+                    (value != RGB.R) && (value != RGB.G) &&
+                    (value != RGB.B) && (value != RGB.A)
                     )
                 {
-                    throw new ArgumentException( "Invalid channel is specified." );
+                    throw new ArgumentException("Invalid channel is specified.");
                 }
                 channel = value;
             }
@@ -84,7 +84,7 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="ExtractChannel"/> class.
         /// </summary>
         /// 
-        public ExtractChannel( )
+        public ExtractChannel()
         {
             // initialize format translation dictionary
             formatTranslations[PixelFormat.Format24bppRgb]  = PixelFormat.Format8bppIndexed;
@@ -100,7 +100,7 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="channel">ARGB channel to extract.</param>
         /// 
-        public ExtractChannel( short channel ) : this( )
+        public ExtractChannel(short channel) : this()
         {
             this.Channel = channel;
         }
@@ -115,34 +115,34 @@ namespace AForge.Imaging.Filters
         /// <exception cref="InvalidImagePropertiesException">Can not extract alpha channel from none ARGB image. The
         /// exception is throw, when alpha channel is requested from RGB image.</exception>
         /// 
-        protected override unsafe void ProcessFilter( UnmanagedImage sourceData, UnmanagedImage destinationData )
+        protected override unsafe void ProcessFilter(UnmanagedImage sourceData, UnmanagedImage destinationData)
         {
             // get width and height
             int width = sourceData.Width;
             int height = sourceData.Height;
 
-            int pixelSize = Image.GetPixelFormatSize( sourceData.PixelFormat ) / 8;
+            int pixelSize = Image.GetPixelFormatSize(sourceData.PixelFormat) / 8;
 
-            if ( ( channel == RGB.A ) && ( pixelSize != 4 ) && ( pixelSize != 8 ) )
+            if ((channel == RGB.A) && (pixelSize != 4) && (pixelSize != 8))
             {
-                throw new InvalidImagePropertiesException( "Can not extract alpha channel from none ARGB image." );
+                throw new InvalidImagePropertiesException("Can not extract alpha channel from none ARGB image.");
             }
 
-            if ( pixelSize <= 4 )
+            if (pixelSize <= 4)
             {
                 int srcOffset = sourceData.Stride - width * pixelSize;
                 int dstOffset = destinationData.Stride - width;
 
                 // do the job
-                byte * src = (byte*) sourceData.ImageData.ToPointer( );
-                byte * dst = (byte*) destinationData.ImageData.ToPointer( );
+                byte* src = (byte*)sourceData.ImageData.ToPointer();
+                byte* dst = (byte*)destinationData.ImageData.ToPointer();
 
                 // allign source pointer to the required channel
                 src += channel;
 
-                for ( int y = 0; y < height; y++ )
+                for (int y = 0; y < height; y++)
                 {
-                    for ( int x = 0; x < width; x++, src += pixelSize, dst++ )
+                    for (int x = 0; x < width; x++, src += pixelSize, dst++)
                     {
                         *dst = *src;
                     }
@@ -154,22 +154,22 @@ namespace AForge.Imaging.Filters
             {
                 pixelSize /= 2;
 
-                byte* srcBase   = (byte*) sourceData.ImageData.ToPointer( );
-                byte* dstBase   = (byte*) destinationData.ImageData.ToPointer( );
+                byte* srcBase = (byte*)sourceData.ImageData.ToPointer();
+                byte* dstBase = (byte*)destinationData.ImageData.ToPointer();
                 int srcStride = sourceData.Stride;
                 int dstStride = destinationData.Stride;
 
                 // for each line
-                for ( int y = 0; y < height; y++ )
+                for (int y = 0; y < height; y++)
                 {
-                    ushort* src = (ushort*) ( srcBase + y * srcStride );
-                    ushort* dst = (ushort*) ( dstBase + y * dstStride );
+                    ushort* src = (ushort*)(srcBase + y * srcStride);
+                    ushort* dst = (ushort*)(dstBase + y * dstStride);
 
                     // allign source pointer to the required channel
                     src += channel;
 
                     // for each pixel
-                    for ( int x = 0; x < width; x++, src += pixelSize, dst++ )
+                    for (int x = 0; x < width; x++, src += pixelSize, dst++)
                     {
                         *dst = *src;
                     }

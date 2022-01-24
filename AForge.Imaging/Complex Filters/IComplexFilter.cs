@@ -8,10 +8,6 @@
 
 namespace AForge.Imaging.ComplexFilters
 {
-    using System;
-    using AForge;
-    using AForge.Math;
-
     /// <summary>
     /// Image processing filter, which operates with Fourier transformed
     /// complex image.
@@ -29,6 +25,6 @@ namespace AForge.Imaging.ComplexFilters
         /// 
         /// <param name="complexImage">Complex image to apply filter to.</param>
         /// 
-        void Apply( ComplexImage complexImage );
+        void Apply(ComplexImage complexImage);
     }
 }

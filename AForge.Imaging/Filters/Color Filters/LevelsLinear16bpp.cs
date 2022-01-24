@@ -8,11 +8,10 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
+    using AForge;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
-    using AForge;
 
     /// <summary>
     /// Linear correction of RGB channels for images, which have 16 bpp planes (16 bit gray images or 48/64 bit colour images).
@@ -41,20 +40,20 @@ namespace AForge.Imaging.Filters
     /// 
     public class LevelsLinear16bpp : BaseInPlacePartialFilter
     {
-        private IntRange inRed   = new IntRange( 0, 65535 );
-        private IntRange inGreen = new IntRange( 0, 65535 );
-        private IntRange inBlue  = new IntRange( 0, 65535 );
+        private IntRange inRed = new IntRange(0, 65535);
+        private IntRange inGreen = new IntRange(0, 65535);
+        private IntRange inBlue = new IntRange(0, 65535);
 
-        private IntRange outRed   = new IntRange( 0, 65535 );
-        private IntRange outGreen = new IntRange( 0, 65535 );
-        private IntRange outBlue  = new IntRange( 0, 65535 );
+        private IntRange outRed = new IntRange(0, 65535);
+        private IntRange outGreen = new IntRange(0, 65535);
+        private IntRange outBlue = new IntRange(0, 65535);
 
-        private ushort[] mapRed   = new ushort[65536];
+        private ushort[] mapRed = new ushort[65536];
         private ushort[] mapGreen = new ushort[65536];
-        private ushort[] mapBlue  = new ushort[65536];
+        private ushort[] mapBlue = new ushort[65536];
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -75,7 +74,7 @@ namespace AForge.Imaging.Filters
             set
             {
                 inRed = value;
-                CalculateMap( inRed, outRed, mapRed );
+                CalculateMap(inRed, outRed, mapRed);
             }
         }
 
@@ -88,7 +87,7 @@ namespace AForge.Imaging.Filters
             set
             {
                 inGreen = value;
-                CalculateMap( inGreen, outGreen, mapGreen );
+                CalculateMap(inGreen, outGreen, mapGreen);
             }
         }
 
@@ -101,7 +100,7 @@ namespace AForge.Imaging.Filters
             set
             {
                 inBlue = value;
-                CalculateMap( inBlue, outBlue, mapBlue );
+                CalculateMap(inBlue, outBlue, mapBlue);
             }
         }
 
@@ -114,7 +113,7 @@ namespace AForge.Imaging.Filters
             set
             {
                 inGreen = value;
-                CalculateMap( inGreen, outGreen, mapGreen );
+                CalculateMap(inGreen, outGreen, mapGreen);
             }
         }
 
@@ -129,9 +128,9 @@ namespace AForge.Imaging.Filters
             set
             {
                 inRed = inGreen = inBlue = value;
-                CalculateMap( inRed, outRed, mapRed );
-                CalculateMap( inGreen, outGreen, mapGreen );
-                CalculateMap( inBlue, outBlue, mapBlue );
+                CalculateMap(inRed, outRed, mapRed);
+                CalculateMap(inGreen, outGreen, mapGreen);
+                CalculateMap(inBlue, outBlue, mapBlue);
             }
         }
 
@@ -144,7 +143,7 @@ namespace AForge.Imaging.Filters
             set
             {
                 outRed = value;
-                CalculateMap( inRed, outRed, mapRed );
+                CalculateMap(inRed, outRed, mapRed);
             }
         }
 
@@ -157,7 +156,7 @@ namespace AForge.Imaging.Filters
             set
             {
                 outGreen = value;
-                CalculateMap( inGreen, outGreen, mapGreen );
+                CalculateMap(inGreen, outGreen, mapGreen);
             }
         }
 
@@ -170,7 +169,7 @@ namespace AForge.Imaging.Filters
             set
             {
                 outBlue = value;
-                CalculateMap( inBlue, outBlue, mapBlue );
+                CalculateMap(inBlue, outBlue, mapBlue);
             }
         }
 
@@ -183,7 +182,7 @@ namespace AForge.Imaging.Filters
             set
             {
                 outGreen = value;
-                CalculateMap( inGreen, outGreen, mapGreen );
+                CalculateMap(inGreen, outGreen, mapGreen);
             }
         }
 
@@ -198,9 +197,9 @@ namespace AForge.Imaging.Filters
             set
             {
                 outRed = outGreen = outBlue = value;
-                CalculateMap( inRed, outRed, mapRed );
-                CalculateMap( inGreen, outGreen, mapGreen );
-                CalculateMap( inBlue, outBlue, mapBlue );
+                CalculateMap(inRed, outRed, mapRed);
+                CalculateMap(inGreen, outGreen, mapGreen);
+                CalculateMap(inBlue, outBlue, mapBlue);
             }
         }
 
@@ -210,11 +209,11 @@ namespace AForge.Imaging.Filters
         /// <summary>
         /// Initializes a new instance of the <see cref="LevelsLinear"/> class.
         /// </summary>
-        public LevelsLinear16bpp( )
+        public LevelsLinear16bpp()
         {
-            CalculateMap( inRed, outRed, mapRed );
-            CalculateMap( inGreen, outGreen, mapGreen );
-            CalculateMap( inBlue, outBlue, mapBlue );
+            CalculateMap(inRed, outRed, mapRed);
+            CalculateMap(inGreen, outGreen, mapGreen);
+            CalculateMap(inBlue, outBlue, mapBlue);
 
             formatTranslations[PixelFormat.Format16bppGrayScale] = PixelFormat.Format16bppGrayScale;
             formatTranslations[PixelFormat.Format48bppRgb]       = PixelFormat.Format48bppRgb;
@@ -229,28 +228,28 @@ namespace AForge.Imaging.Filters
         /// <param name="image">Source image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         ///
-        protected override unsafe void ProcessFilter( UnmanagedImage image, Rectangle rect )
+        protected override unsafe void ProcessFilter(UnmanagedImage image, Rectangle rect)
         {
-            int pixelSize = Image.GetPixelFormatSize( image.PixelFormat ) / 16;
+            int pixelSize = Image.GetPixelFormatSize(image.PixelFormat) / 16;
 
             // processing start and stop X,Y positions
-            int startX  = rect.Left;
-            int startY  = rect.Top;
-            int stopX   = startX + rect.Width;
-            int stopY   = startY + rect.Height;
-            int offset  = image.Stride - rect.Width * pixelSize;
+            int startX = rect.Left;
+            int startY = rect.Top;
+            int stopX = startX + rect.Width;
+            int stopY = startY + rect.Height;
+            int offset = image.Stride - rect.Width * pixelSize;
 
             // do the job
-            byte* basePtr =(byte*) image.ImageData.ToPointer( );
+            byte* basePtr = (byte*)image.ImageData.ToPointer();
 
-            if ( image.PixelFormat == PixelFormat.Format16bppGrayScale )
+            if (image.PixelFormat == PixelFormat.Format16bppGrayScale)
             {
                 // grayscale image
-                for ( int y = startY; y < stopY; y++ )
+                for (int y = startY; y < stopY; y++)
                 {
-                    ushort* ptr = (ushort*) ( basePtr + y * image.Stride ) + startX;
+                    ushort* ptr = (ushort*)(basePtr + y * image.Stride) + startX;
 
-                    for ( int x = startX; x < stopX; x++, ptr++ )
+                    for (int x = startX; x < stopX; x++, ptr++)
                     {
                         // gray
                         *ptr = mapGreen[*ptr];
@@ -260,11 +259,11 @@ namespace AForge.Imaging.Filters
             else
             {
                 // RGB image
-                for ( int y = startY; y < stopY; y++ )
+                for (int y = startY; y < stopY; y++)
                 {
-                    ushort* ptr = (ushort*) ( basePtr + y * image.Stride ) + startX * pixelSize;
+                    ushort* ptr = (ushort*)(basePtr + y * image.Stride) + startX * pixelSize;
 
-                    for ( int x = startX; x < stopX; x++, ptr += pixelSize )
+                    for (int x = startX; x < stopX; x++, ptr += pixelSize)
                     {
                         // red
                         ptr[RGB.R] = mapRed[ptr[RGB.R]];
@@ -286,26 +285,26 @@ namespace AForge.Imaging.Filters
         /// <param name="outRange">Output range.</param>
         /// <param name="map">Conversion map.</param>
         /// 
-        private void CalculateMap( IntRange inRange, IntRange outRange, ushort[] map )
+        private void CalculateMap(IntRange inRange, IntRange outRange, ushort[] map)
         {
             double k = 0, b = 0;
 
-            if ( inRange.Max != inRange.Min )
+            if (inRange.Max != inRange.Min)
             {
-                k = (double) ( outRange.Max - outRange.Min ) / (double) ( inRange.Max - inRange.Min );
-                b = (double) ( outRange.Min ) - k * inRange.Min;
+                k = (double)(outRange.Max - outRange.Min) / (double)(inRange.Max - inRange.Min);
+                b = (double)(outRange.Min) - k * inRange.Min;
             }
 
-            for ( int i = 0; i < 65536; i++ )
+            for (int i = 0; i < 65536; i++)
             {
-                ushort v = (ushort) i;
+                ushort v = (ushort)i;
 
-                if ( v >= inRange.Max )
-                    v = (ushort) outRange.Max;
-                else if ( v <= inRange.Min )
-                    v = (ushort) outRange.Min;
+                if (v >= inRange.Max)
+                    v = (ushort)outRange.Max;
+                else if (v <= inRange.Min)
+                    v = (ushort)outRange.Min;
                 else
-                    v = (ushort) ( k * v + b );
+                    v = (ushort)(k * v + b);
 
                 map[i] = v;
             }

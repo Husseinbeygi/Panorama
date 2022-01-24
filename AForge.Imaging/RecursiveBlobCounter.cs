@@ -78,7 +78,7 @@ namespace AForge.Imaging
         /// 
         public Color BackgroundThreshold
         {
-            get { return Color.FromArgb( backgroundThresholdR, backgroundThresholdG, backgroundThresholdB ); }
+            get { return Color.FromArgb(backgroundThresholdR, backgroundThresholdG, backgroundThresholdB); }
             set
             {
                 backgroundThresholdR = value.R;
@@ -97,7 +97,7 @@ namespace AForge.Imaging
         /// <see cref="BlobCounterBase.ProcessImage(BitmapData)"/> or <see cref="BlobCounterBase.ProcessImage(UnmanagedImage)"/>
         /// method should be called to collect objects map.</remarks>
         /// 
-        public RecursiveBlobCounter( ) { }
+        public RecursiveBlobCounter() { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RecursiveBlobCounter"/> class.
@@ -105,7 +105,7 @@ namespace AForge.Imaging
         /// 
         /// <param name="image">Image to look for objects in.</param>
         /// 
-        public RecursiveBlobCounter( Bitmap image ) : base( image ) { }
+        public RecursiveBlobCounter(Bitmap image) : base(image) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RecursiveBlobCounter"/> class.
@@ -113,7 +113,7 @@ namespace AForge.Imaging
         /// 
         /// <param name="imageData">Image data to look for objects in.</param>
         /// 
-        public RecursiveBlobCounter( BitmapData imageData ) : base( imageData ) { }
+        public RecursiveBlobCounter(BitmapData imageData) : base(imageData) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RecursiveBlobCounter"/> class.
@@ -121,7 +121,7 @@ namespace AForge.Imaging
         /// 
         /// <param name="image">Unmanaged image to look for objects in.</param>
         /// 
-        public RecursiveBlobCounter( UnmanagedImage image ) : base( image ) { }
+        public RecursiveBlobCounter(UnmanagedImage image) : base(image) { }
 
         /// <summary>
         /// Actual objects map building.
@@ -133,32 +133,32 @@ namespace AForge.Imaging
         /// 
         /// <exception cref="UnsupportedImageFormatException">Unsupported pixel format of the source image.</exception>
         /// 
-        protected override void BuildObjectsMap( UnmanagedImage image )
+        protected override void BuildObjectsMap(UnmanagedImage image)
         {
             this.stride = image.Stride;
 
             // check pixel format
-            if ( ( image.PixelFormat != PixelFormat.Format8bppIndexed ) &&
-                 ( image.PixelFormat != PixelFormat.Format24bppRgb ) &&
-                 ( image.PixelFormat != PixelFormat.Format32bppRgb ) &&
-                 ( image.PixelFormat != PixelFormat.Format32bppArgb ) &&
-                 ( image.PixelFormat != PixelFormat.Format32bppPArgb ) )
+            if ((image.PixelFormat != PixelFormat.Format8bppIndexed) &&
+                 (image.PixelFormat != PixelFormat.Format24bppRgb) &&
+                 (image.PixelFormat != PixelFormat.Format32bppRgb) &&
+                 (image.PixelFormat != PixelFormat.Format32bppArgb) &&
+                 (image.PixelFormat != PixelFormat.Format32bppPArgb))
             {
-                throw new UnsupportedImageFormatException( "Unsupported pixel format of the source image." );
+                throw new UnsupportedImageFormatException("Unsupported pixel format of the source image.");
             }
 
             // allocate temporary labels array
-            tempLabels = new int[( imageWidth + 2 ) * ( imageHeight + 2 )];
+            tempLabels = new int[(imageWidth + 2) * (imageHeight + 2)];
             // fill boundaries with reserved value
-            for ( int x = 0, mx = imageWidth + 2; x < mx; x++ )
+            for (int x = 0, mx = imageWidth + 2; x < mx; x++)
             {
                 tempLabels[x] = -1;
-                tempLabels[x + ( imageHeight + 1 ) * ( imageWidth + 2 )] = -1;
+                tempLabels[x + (imageHeight + 1) * (imageWidth + 2)] = -1;
             }
-            for ( int y = 0, my = imageHeight + 2; y < my; y++ )
+            for (int y = 0, my = imageHeight + 2; y < my; y++)
             {
-                tempLabels[y * ( imageWidth + 2 )] = -1;
-                tempLabels[y * ( imageWidth + 2 ) + imageWidth + 1] = -1;
+                tempLabels[y * (imageWidth + 2)] = -1;
+                tempLabels[y * (imageWidth + 2) + imageWidth + 1] = -1;
             }
 
             // initial objects count
@@ -167,24 +167,24 @@ namespace AForge.Imaging
             // do the job
             unsafe
             {
-                byte* src = (byte*) image.ImageData.ToPointer( );
+                byte* src = (byte*)image.ImageData.ToPointer();
                 int p = imageWidth + 2 + 1;
 
-                if ( image.PixelFormat == PixelFormat.Format8bppIndexed )
+                if (image.PixelFormat == PixelFormat.Format8bppIndexed)
                 {
                     int offset = stride - imageWidth;
 
                     // for each line
-                    for ( int y = 0; y < imageHeight; y++ )
+                    for (int y = 0; y < imageHeight; y++)
                     {
                         // for each pixel
-                        for ( int x = 0; x < imageWidth; x++, src++, p++ )
+                        for (int x = 0; x < imageWidth; x++, src++, p++)
                         {
                             // check for non-labeled pixel
-                            if ( ( *src > backgroundThresholdG ) && ( tempLabels[p] == 0 ) )
+                            if ((*src > backgroundThresholdG) && (tempLabels[p] == 0))
                             {
                                 objectsCount++;
-                                LabelPixel( src, p );
+                                LabelPixel(src, p);
                             }
                         }
                         src += offset;
@@ -193,25 +193,25 @@ namespace AForge.Imaging
                 }
                 else
                 {
-                    pixelSize = Bitmap.GetPixelFormatSize( image.PixelFormat ) / 8;
+                    pixelSize = Bitmap.GetPixelFormatSize(image.PixelFormat) / 8;
                     int offset = stride - imageWidth * pixelSize;
 
                     // for each line
-                    for ( int y = 0; y < imageHeight; y++ )
+                    for (int y = 0; y < imageHeight; y++)
                     {
                         // for each pixel
-                        for ( int x = 0; x < imageWidth; x++, src += pixelSize, p++ )
+                        for (int x = 0; x < imageWidth; x++, src += pixelSize, p++)
                         {
                             // check for non-labeled pixel
-                            if ( (
-                                    ( src[RGB.R] > backgroundThresholdR ) ||
-                                    ( src[RGB.G] > backgroundThresholdG ) ||
-                                    ( src[RGB.B] > backgroundThresholdB )
-                                  ) && 
-                                ( tempLabels[p] == 0 ) )
+                            if ((
+                                    (src[RGB.R] > backgroundThresholdR) ||
+                                    (src[RGB.G] > backgroundThresholdG) ||
+                                    (src[RGB.B] > backgroundThresholdB)
+                                  ) &&
+                                (tempLabels[p] == 0))
                             {
                                 objectsCount++;
-                                LabelColorPixel( src, p );
+                                LabelColorPixel(src, p);
                             }
                         }
                         src += offset;
@@ -223,46 +223,46 @@ namespace AForge.Imaging
             // allocate labels array
             objectLabels = new int[imageWidth * imageHeight];
 
-            for ( int y = 0; y < imageHeight; y++ )
+            for (int y = 0; y < imageHeight; y++)
             {
-                Array.Copy( tempLabels, ( y + 1 ) * ( imageWidth + 2 ) + 1, objectLabels, y * imageWidth, imageWidth );
+                Array.Copy(tempLabels, (y + 1) * (imageWidth + 2) + 1, objectLabels, y * imageWidth, imageWidth);
             }
         }
 
-        private unsafe void LabelPixel( byte* pixel, int labelPointer )
+        private unsafe void LabelPixel(byte* pixel, int labelPointer)
         {
-            if ( ( tempLabels[labelPointer] == 0 ) && ( *pixel > backgroundThresholdG ) )
+            if ((tempLabels[labelPointer] == 0) && (*pixel > backgroundThresholdG))
             {
                 tempLabels[labelPointer] = objectsCount;
 
-                LabelPixel( pixel + 1, labelPointer + 1 );                              // x + 1, y
-                LabelPixel( pixel + 1 + stride, labelPointer + 1 + 2 + imageWidth );    // x + 1, y + 1
-                LabelPixel( pixel + stride, labelPointer + 2 + imageWidth );            // x    , y + 1
-                LabelPixel( pixel - 1 + stride, labelPointer - 1 + 2 + imageWidth );    // x - 1, y + 1
-                LabelPixel( pixel - 1, labelPointer - 1 );                              // x - 1, y
-                LabelPixel( pixel - 1 - stride, labelPointer - 1 - 2 - imageWidth );    // x - 1, y - 1
-                LabelPixel( pixel - stride, labelPointer - 2 - imageWidth );            // x    , y - 1
-                LabelPixel( pixel + 1 - stride, labelPointer + 1 - 2 - imageWidth );    // x + 1, y - 1
+                LabelPixel(pixel + 1, labelPointer + 1);                              // x + 1, y
+                LabelPixel(pixel + 1 + stride, labelPointer + 1 + 2 + imageWidth);    // x + 1, y + 1
+                LabelPixel(pixel + stride, labelPointer + 2 + imageWidth);            // x    , y + 1
+                LabelPixel(pixel - 1 + stride, labelPointer - 1 + 2 + imageWidth);    // x - 1, y + 1
+                LabelPixel(pixel - 1, labelPointer - 1);                              // x - 1, y
+                LabelPixel(pixel - 1 - stride, labelPointer - 1 - 2 - imageWidth);    // x - 1, y - 1
+                LabelPixel(pixel - stride, labelPointer - 2 - imageWidth);            // x    , y - 1
+                LabelPixel(pixel + 1 - stride, labelPointer + 1 - 2 - imageWidth);    // x + 1, y - 1
             }
         }
 
-        private unsafe void LabelColorPixel( byte* pixel, int labelPointer )
+        private unsafe void LabelColorPixel(byte* pixel, int labelPointer)
         {
-            if ( ( tempLabels[labelPointer] == 0 ) && (
-                ( pixel[RGB.R] > backgroundThresholdR ) ||
-                ( pixel[RGB.G] > backgroundThresholdG ) ||
-                ( pixel[RGB.B] > backgroundThresholdB ) ) )
+            if ((tempLabels[labelPointer] == 0) && (
+                (pixel[RGB.R] > backgroundThresholdR) ||
+                (pixel[RGB.G] > backgroundThresholdG) ||
+                (pixel[RGB.B] > backgroundThresholdB)))
             {
                 tempLabels[labelPointer] = objectsCount;
 
-                LabelColorPixel( pixel + pixelSize, labelPointer + 1 );                              // x + 1, y
-                LabelColorPixel( pixel + pixelSize + stride, labelPointer + 1 + 2 + imageWidth );    // x + 1, y + 1
-                LabelColorPixel( pixel + stride, labelPointer + 2 + imageWidth );                    // x    , y + 1
-                LabelColorPixel( pixel - pixelSize + stride, labelPointer - 1 + 2 + imageWidth );    // x - 1, y + 1
-                LabelColorPixel( pixel - pixelSize, labelPointer - 1 );                              // x - 1, y
-                LabelColorPixel( pixel - pixelSize - stride, labelPointer - 1 - 2 - imageWidth );    // x - 1, y - 1
-                LabelColorPixel( pixel - stride, labelPointer - 2 - imageWidth );                    // x    , y - 1
-                LabelColorPixel( pixel + pixelSize - stride, labelPointer + 1 - 2 - imageWidth );    // x + 1, y - 1
+                LabelColorPixel(pixel + pixelSize, labelPointer + 1);                              // x + 1, y
+                LabelColorPixel(pixel + pixelSize + stride, labelPointer + 1 + 2 + imageWidth);    // x + 1, y + 1
+                LabelColorPixel(pixel + stride, labelPointer + 2 + imageWidth);                    // x    , y + 1
+                LabelColorPixel(pixel - pixelSize + stride, labelPointer - 1 + 2 + imageWidth);    // x - 1, y + 1
+                LabelColorPixel(pixel - pixelSize, labelPointer - 1);                              // x - 1, y
+                LabelColorPixel(pixel - pixelSize - stride, labelPointer - 1 - 2 - imageWidth);    // x - 1, y - 1
+                LabelColorPixel(pixel - stride, labelPointer - 2 - imageWidth);                    // x    , y - 1
+                LabelColorPixel(pixel + pixelSize - stride, labelPointer + 1 - 2 - imageWidth);    // x + 1, y - 1
             }
         }
     }

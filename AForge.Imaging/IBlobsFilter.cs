@@ -29,6 +29,6 @@ namespace AForge.Imaging
         /// <returns>Return <see langword="true"/> if the blob should be kept or
         /// <see langword="false"/> if it should be removed.</returns>
         ///
-        bool Check( Blob blob );
+        bool Check(Blob blob);
     }
 }

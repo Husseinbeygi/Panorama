@@ -39,11 +39,11 @@ namespace AForge.Imaging
         // cache structure
         private class CacheBlock
         {
-            public IntPtr   MemoryBlock;
-            public int      Size;
-            public bool     Free;
+            public IntPtr MemoryBlock;
+            public int Size;
+            public bool Free;
 
-            public CacheBlock( IntPtr memoryBlock, int size )
+            public CacheBlock(IntPtr memoryBlock, int size)
             {
                 this.MemoryBlock = memoryBlock;
                 this.Size = size;
@@ -51,7 +51,7 @@ namespace AForge.Imaging
             }
         }
 
-        private static List<CacheBlock> memoryBlocks = new List<CacheBlock>( );
+        private static List<CacheBlock> memoryBlocks = new List<CacheBlock>();
 
         /// <summary>
         /// Maximum amount of memory blocks to keep in cache.
@@ -67,16 +67,16 @@ namespace AForge.Imaging
         {
             get
             {
-                lock ( memoryBlocks )
+                lock (memoryBlocks)
                 {
                     return maximumCacheSize;
                 }
             }
             set
             {
-                lock ( memoryBlocks )
+                lock (memoryBlocks)
                 {
-                    maximumCacheSize = Math.Max( 0, Math.Min( 10, value ) );
+                    maximumCacheSize = Math.Max(0, Math.Min(10, value));
                 }
             }
         }
@@ -89,7 +89,7 @@ namespace AForge.Imaging
         {
             get
             {
-                lock ( memoryBlocks )
+                lock (memoryBlocks)
                 {
                     return currentCacheSize;
                 }
@@ -104,7 +104,7 @@ namespace AForge.Imaging
         {
             get
             {
-                lock ( memoryBlocks )
+                lock (memoryBlocks)
                 {
                     return busyBlocks;
                 }
@@ -119,7 +119,7 @@ namespace AForge.Imaging
         {
             get
             {
-                lock ( memoryBlocks )
+                lock (memoryBlocks)
                 {
                     return currentCacheSize - busyBlocks;
                 }
@@ -134,7 +134,7 @@ namespace AForge.Imaging
         {
             get
             {
-                lock ( memoryBlocks )
+                lock (memoryBlocks)
                 {
                     return cachedMemory;
                 }
@@ -178,19 +178,19 @@ namespace AForge.Imaging
         /// 
         /// <exception cref="OutOfMemoryException">There is insufficient memory to satisfy the request.</exception>
         /// 
-        public static IntPtr Alloc( int size )
+        public static IntPtr Alloc(int size)
         {
-            lock ( memoryBlocks )
+            lock (memoryBlocks)
             {
                 // allocate memory block without caching if cache is not available
-                if ( ( busyBlocks >= maximumCacheSize ) || ( size > maxSizeToCache ) || ( size < minSizeToCache ) )
-                    return Marshal.AllocHGlobal( size );
+                if ((busyBlocks >= maximumCacheSize) || (size > maxSizeToCache) || (size < minSizeToCache))
+                    return Marshal.AllocHGlobal(size);
 
                 // if all cached blocks are busy, create new cache block
-                if ( currentCacheSize == busyBlocks )
+                if (currentCacheSize == busyBlocks)
                 {
-                    IntPtr memoryBlock = Marshal.AllocHGlobal( size );
-                    memoryBlocks.Add( new CacheBlock( memoryBlock, size ) );
+                    IntPtr memoryBlock = Marshal.AllocHGlobal(size);
+                    memoryBlocks.Add(new CacheBlock(memoryBlock, size));
 
                     busyBlocks++;
                     currentCacheSize++;
@@ -200,11 +200,11 @@ namespace AForge.Imaging
                 }
 
                 // find free memory block with enough memory
-                for ( int i = 0; i < currentCacheSize; i++ )
+                for (int i = 0; i < currentCacheSize; i++)
                 {
                     CacheBlock block = memoryBlocks[i];
 
-                    if ( ( block.Free == true ) && ( block.Size >= size ) )
+                    if ((block.Free == true) && (block.Size >= size))
                     {
                         block.Free = false;
                         busyBlocks++;
@@ -213,21 +213,21 @@ namespace AForge.Imaging
                 }
 
                 // finaly find first free memory block and resize it
-                for ( int i = 0; i < currentCacheSize; i++ )
+                for (int i = 0; i < currentCacheSize; i++)
                 {
                     CacheBlock block = memoryBlocks[i];
 
-                    if ( block.Free == true )
+                    if (block.Free == true)
                     {
                         // remove this block cache
-                        Marshal.FreeHGlobal( block.MemoryBlock );
-                        memoryBlocks.RemoveAt( i );
+                        Marshal.FreeHGlobal(block.MemoryBlock);
+                        memoryBlocks.RemoveAt(i);
                         currentCacheSize--;
                         cachedMemory -= block.Size;
 
                         // add new one
-                        IntPtr memoryBlock = Marshal.AllocHGlobal( size );
-                        memoryBlocks.Add( new CacheBlock( memoryBlock, size ) );
+                        IntPtr memoryBlock = Marshal.AllocHGlobal(size);
+                        memoryBlocks.Add(new CacheBlock(memoryBlock, size));
 
                         busyBlocks++;
                         currentCacheSize++;
@@ -250,14 +250,14 @@ namespace AForge.Imaging
         /// <remarks>This method may skip actual deallocation of memory and keep it for future <see cref="Alloc"/> requests,
         /// if some caching scheme is used.</remarks>
         /// 
-        public static void Free( IntPtr pointer )
+        public static void Free(IntPtr pointer)
         {
-            lock ( memoryBlocks )
+            lock (memoryBlocks)
             {
                 // find the memory block in cache
-                for ( int i = 0; i < currentCacheSize; i++ )
+                for (int i = 0; i < currentCacheSize; i++)
                 {
-                    if ( memoryBlocks[i].MemoryBlock == pointer )
+                    if (memoryBlocks[i].MemoryBlock == pointer)
                     {
                         // mark the block as free
                         memoryBlocks[i].Free = true;
@@ -267,7 +267,7 @@ namespace AForge.Imaging
                 }
 
                 // the block was not cached, so lets just free it
-                Marshal.FreeHGlobal( pointer );
+                Marshal.FreeHGlobal(pointer);
             }
         }
 
@@ -279,20 +279,20 @@ namespace AForge.Imaging
         /// 
         /// <returns>Returns number of freed memory blocks.</returns>
         /// 
-        public static int FreeUnusedMemory( )
+        public static int FreeUnusedMemory()
         {
-            lock ( memoryBlocks )
+            lock (memoryBlocks)
             {
                 int freedBlocks = 0;
 
                 // free all unused memory
-                for ( int i = currentCacheSize - 1; i >= 0; i-- )
+                for (int i = currentCacheSize - 1; i >= 0; i--)
                 {
-                    if ( memoryBlocks[i].Free )
+                    if (memoryBlocks[i].Free)
                     {
-                        Marshal.FreeHGlobal( memoryBlocks[i].MemoryBlock );
+                        Marshal.FreeHGlobal(memoryBlocks[i].MemoryBlock);
                         cachedMemory -= memoryBlocks[i].Size;
-                        memoryBlocks.RemoveAt( i );
+                        memoryBlocks.RemoveAt(i);
                         freedBlocks++;
                     }
                 }

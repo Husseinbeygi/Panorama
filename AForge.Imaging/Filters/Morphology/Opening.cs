@@ -8,7 +8,6 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
@@ -47,8 +46,8 @@ namespace AForge.Imaging.Filters
     /// 
     public class Opening : IFilter, IInPlaceFilter, IInPlacePartialFilter, IFilterInformation
     {
-        private Erosion     errosion = new Erosion( );
-        private Dilatation  dilatation = new Dilatation( );
+        private Erosion errosion = new Erosion();
+        private Dilatation dilatation = new Dilatation();
 
         /// <summary>
         /// Format translations dictionary.
@@ -67,7 +66,7 @@ namespace AForge.Imaging.Filters
         /// classes - 3x3 structuring element with all elements equal to 1.
         /// </para></remarks>
         /// 
-        public Opening( ) { }
+        public Opening() { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Opening"/> class.
@@ -78,10 +77,10 @@ namespace AForge.Imaging.Filters
         /// <remarks><para>See documentation to <see cref="Erosion"/> and <see cref="Dilatation"/>
         /// classes for information about structuring element constraints.</para></remarks>
         /// 
-        public Opening( short[,] se )
+        public Opening(short[,] se)
         {
-            errosion   = new Erosion( se );
-            dilatation = new Dilatation( se );
+            errosion   = new Erosion(se);
+            dilatation = new Dilatation(se);
         }
 
         /// <summary>
@@ -98,12 +97,12 @@ namespace AForge.Imaging.Filters
         /// 
         /// <exception cref="UnsupportedImageFormatException">Unsupported pixel format of the source image.</exception>
         ///
-        public Bitmap Apply( Bitmap image )
+        public Bitmap Apply(Bitmap image)
         {
-            Bitmap tempImage = errosion.Apply( image );
-            Bitmap destImage = dilatation.Apply( tempImage );
+            Bitmap tempImage = errosion.Apply(image);
+            Bitmap destImage = dilatation.Apply(tempImage);
 
-            tempImage.Dispose( );
+            tempImage.Dispose();
 
             return destImage;
         }
@@ -121,12 +120,12 @@ namespace AForge.Imaging.Filters
         /// of image processing filter as new image. The source image data are kept
         /// unchanged.</remarks>
         /// 
-        public Bitmap Apply( BitmapData imageData )
+        public Bitmap Apply(BitmapData imageData)
         {
-            Bitmap tempImage = errosion.Apply( imageData );
-            Bitmap destImage = dilatation.Apply( tempImage );
+            Bitmap tempImage = errosion.Apply(imageData);
+            Bitmap destImage = dilatation.Apply(tempImage);
 
-            tempImage.Dispose( );
+            tempImage.Dispose();
 
             return destImage;
         }
@@ -145,10 +144,10 @@ namespace AForge.Imaging.Filters
         /// 
         /// <exception cref="UnsupportedImageFormatException">Unsupported pixel format of the source image.</exception>
         ///
-        public UnmanagedImage Apply( UnmanagedImage image )
+        public UnmanagedImage Apply(UnmanagedImage image)
         {
-            UnmanagedImage destImage = errosion.Apply( image );
-            dilatation.ApplyInPlace( destImage );
+            UnmanagedImage destImage = errosion.Apply(image);
+            dilatation.ApplyInPlace(destImage);
 
             return destImage;
         }
@@ -172,10 +171,10 @@ namespace AForge.Imaging.Filters
         /// <exception cref="InvalidImagePropertiesException">Incorrect destination pixel format.</exception>
         /// <exception cref="InvalidImagePropertiesException">Destination image has wrong width and/or height.</exception>
         ///
-        public void Apply( UnmanagedImage sourceImage, UnmanagedImage destinationImage )
+        public void Apply(UnmanagedImage sourceImage, UnmanagedImage destinationImage)
         {
-            errosion.Apply( sourceImage, destinationImage );
-            dilatation.ApplyInPlace( destinationImage );
+            errosion.Apply(sourceImage, destinationImage);
+            dilatation.ApplyInPlace(destinationImage);
         }
 
         /// <summary>
@@ -188,10 +187,10 @@ namespace AForge.Imaging.Filters
         /// 
         /// <exception cref="UnsupportedImageFormatException">Unsupported pixel format of the source image.</exception>
         ///  
-        public void ApplyInPlace( Bitmap image )
+        public void ApplyInPlace(Bitmap image)
         {
-            errosion.ApplyInPlace( image );
-            dilatation.ApplyInPlace( image );
+            errosion.ApplyInPlace(image);
+            dilatation.ApplyInPlace(image);
         }
 
         /// <summary>
@@ -204,10 +203,10 @@ namespace AForge.Imaging.Filters
         /// 
         /// <exception cref="UnsupportedImageFormatException">Unsupported pixel format of the source image.</exception>
         ///
-        public void ApplyInPlace( BitmapData imageData )
+        public void ApplyInPlace(BitmapData imageData)
         {
-            errosion.ApplyInPlace( imageData );
-            dilatation.ApplyInPlace( imageData );
+            errosion.ApplyInPlace(imageData);
+            dilatation.ApplyInPlace(imageData);
         }
 
         /// <summary>
@@ -220,10 +219,10 @@ namespace AForge.Imaging.Filters
         /// 
         /// <exception cref="UnsupportedImageFormatException">Unsupported pixel format of the source image.</exception>
         ///
-        public void ApplyInPlace( UnmanagedImage image )
+        public void ApplyInPlace(UnmanagedImage image)
         {
-            errosion.ApplyInPlace( image );
-            dilatation.ApplyInPlace( image );
+            errosion.ApplyInPlace(image);
+            dilatation.ApplyInPlace(image);
         }
 
         /// <summary>
@@ -237,10 +236,10 @@ namespace AForge.Imaging.Filters
         /// 
         /// <exception cref="UnsupportedImageFormatException">Unsupported pixel format of the source image.</exception>
         ///  
-        public void ApplyInPlace( Bitmap image, Rectangle rect )
+        public void ApplyInPlace(Bitmap image, Rectangle rect)
         {
-            errosion.ApplyInPlace( image, rect );
-            dilatation.ApplyInPlace( image, rect );
+            errosion.ApplyInPlace(image, rect);
+            dilatation.ApplyInPlace(image, rect);
         }
 
         /// <summary>
@@ -254,10 +253,10 @@ namespace AForge.Imaging.Filters
         /// 
         /// <exception cref="UnsupportedImageFormatException">Unsupported pixel format of the source image.</exception>
         ///
-        public void ApplyInPlace( BitmapData imageData, Rectangle rect )
+        public void ApplyInPlace(BitmapData imageData, Rectangle rect)
         {
-            errosion.ApplyInPlace( imageData, rect );
-            dilatation.ApplyInPlace( imageData, rect );
+            errosion.ApplyInPlace(imageData, rect);
+            dilatation.ApplyInPlace(imageData, rect);
         }
 
         /// <summary>
@@ -271,10 +270,10 @@ namespace AForge.Imaging.Filters
         /// 
         /// <exception cref="UnsupportedImageFormatException">Unsupported pixel format of the source image.</exception>
         /// 
-        public void ApplyInPlace( UnmanagedImage image, Rectangle rect )
+        public void ApplyInPlace(UnmanagedImage image, Rectangle rect)
         {
-            errosion.ApplyInPlace( image, rect );
-            dilatation.ApplyInPlace( image, rect );
+            errosion.ApplyInPlace(image, rect);
+            dilatation.ApplyInPlace(image, rect);
         }
     }
 }

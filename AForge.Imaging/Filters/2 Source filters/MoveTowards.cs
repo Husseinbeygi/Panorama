@@ -52,10 +52,10 @@ namespace AForge.Imaging.Filters
     /// 
     public class MoveTowards : BaseInPlaceFilter2
     {
-        private int	stepSize = 1;
+        private int stepSize = 1;
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -78,15 +78,15 @@ namespace AForge.Imaging.Filters
         public int StepSize
         {
             get { return stepSize; }
-            set { stepSize = Math.Max( 1, Math.Min( 65535, value ) ); }
+            set { stepSize = Math.Max(1, Math.Min(65535, value)); }
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MoveTowards"/> class
         /// </summary>
-        public MoveTowards( )
+        public MoveTowards()
         {
-            InitFormatTranslations( );
+            InitFormatTranslations();
         }
 
         /// <summary>
@@ -95,10 +95,10 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="overlayImage">Overlay image.</param>
         /// 
-        public MoveTowards( Bitmap overlayImage )
-            : base( overlayImage )
+        public MoveTowards(Bitmap overlayImage)
+            : base(overlayImage)
         {
-            InitFormatTranslations( );
+            InitFormatTranslations();
         }
 
         /// <summary>
@@ -108,10 +108,10 @@ namespace AForge.Imaging.Filters
         /// <param name="overlayImage">Overlay image.</param>
         /// <param name="stepSize">Step size.</param>
         /// 
-        public MoveTowards( Bitmap overlayImage, int stepSize )
-            : base( overlayImage )
+        public MoveTowards(Bitmap overlayImage, int stepSize)
+            : base(overlayImage)
         {
-            InitFormatTranslations( );
+            InitFormatTranslations();
             StepSize = stepSize;
         }
 
@@ -121,10 +121,10 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="unmanagedOverlayImage">Unmanaged overlay image.</param>
         /// 
-        public MoveTowards( UnmanagedImage unmanagedOverlayImage )
-            : base( unmanagedOverlayImage )
+        public MoveTowards(UnmanagedImage unmanagedOverlayImage)
+            : base(unmanagedOverlayImage)
         {
-            InitFormatTranslations( );
+            InitFormatTranslations();
         }
 
         /// <summary>
@@ -134,15 +134,15 @@ namespace AForge.Imaging.Filters
         /// <param name="unmanagedOverlayImage">Unmanaged overlay image.</param>
         /// <param name="stepSize">Step size.</param>
         /// 
-        public MoveTowards( UnmanagedImage unmanagedOverlayImage, int stepSize )
-            : base( unmanagedOverlayImage )
+        public MoveTowards(UnmanagedImage unmanagedOverlayImage, int stepSize)
+            : base(unmanagedOverlayImage)
         {
-            InitFormatTranslations( );
+            InitFormatTranslations();
             StepSize = stepSize;
         }
 
         // Initialize format translation dictionary
-        private void InitFormatTranslations( )
+        private void InitFormatTranslations()
         {
             formatTranslations[PixelFormat.Format8bppIndexed]    = PixelFormat.Format8bppIndexed;
             formatTranslations[PixelFormat.Format24bppRgb]       = PixelFormat.Format24bppRgb;
@@ -160,47 +160,47 @@ namespace AForge.Imaging.Filters
         /// <param name="image">Source image data.</param>
         /// <param name="overlay">Overlay image data.</param>
         ///
-        protected override unsafe void ProcessFilter( UnmanagedImage image, UnmanagedImage overlay )
+        protected override unsafe void ProcessFilter(UnmanagedImage image, UnmanagedImage overlay)
         {
             PixelFormat pixelFormat = image.PixelFormat;
             // get image dimension
-            int width  = image.Width;
+            int width = image.Width;
             int height = image.Height;
             // pixel value
             int v;
 
             if (
-                ( pixelFormat == PixelFormat.Format8bppIndexed ) ||
-                ( pixelFormat == PixelFormat.Format24bppRgb ) ||
-                ( pixelFormat == PixelFormat.Format32bppRgb ) ||
-                ( pixelFormat == PixelFormat.Format32bppArgb ) )
+                (pixelFormat == PixelFormat.Format8bppIndexed) ||
+                (pixelFormat == PixelFormat.Format24bppRgb) ||
+                (pixelFormat == PixelFormat.Format32bppRgb) ||
+                (pixelFormat == PixelFormat.Format32bppArgb))
             {
                 // initialize other variables
-                int pixelSize = ( pixelFormat == PixelFormat.Format8bppIndexed ) ? 1 :
-                    ( pixelFormat == PixelFormat.Format24bppRgb ) ? 3 : 4;
-                int lineSize  = width * pixelSize;
+                int pixelSize = (pixelFormat == PixelFormat.Format8bppIndexed) ? 1 :
+                    (pixelFormat == PixelFormat.Format24bppRgb) ? 3 : 4;
+                int lineSize = width * pixelSize;
                 int srcOffset = image.Stride - lineSize;
                 int ovrOffset = overlay.Stride - lineSize;
 
                 // do the job
-                byte * ptr = (byte*) image.ImageData.ToPointer( );
-                byte * ovr = (byte*) overlay.ImageData.ToPointer( );
+                byte* ptr = (byte*)image.ImageData.ToPointer();
+                byte* ovr = (byte*)overlay.ImageData.ToPointer();
 
                 // for each line
-                for ( int y = 0; y < height; y++ )
+                for (int y = 0; y < height; y++)
                 {
                     // for each pixel
-                    for ( int x = 0; x < lineSize; x++, ptr++, ovr++ )
+                    for (int x = 0; x < lineSize; x++, ptr++, ovr++)
                     {
-                        v = (int) *ovr - *ptr;
-                        if ( v > 0 )
+                        v = (int)*ovr - *ptr;
+                        if (v > 0)
                         {
-                            *ptr += (byte) ( ( stepSize < v ) ? stepSize : v );
+                            *ptr += (byte)((stepSize < v) ? stepSize : v);
                         }
-                        else if ( v < 0 )
+                        else if (v < 0)
                         {
                             v = -v;
-                            *ptr -= (byte) ( ( stepSize < v ) ? stepSize : v );
+                            *ptr -= (byte)((stepSize < v) ? stepSize : v);
                         }
                     }
                     ptr += srcOffset;
@@ -210,34 +210,34 @@ namespace AForge.Imaging.Filters
             else
             {
                 // initialize other variables
-                int pixelSize = ( pixelFormat == PixelFormat.Format16bppGrayScale ) ? 1 :
-                    ( pixelFormat == PixelFormat.Format48bppRgb ) ? 3 : 4;
-                int lineSize  = width * pixelSize;
+                int pixelSize = (pixelFormat == PixelFormat.Format16bppGrayScale) ? 1 :
+                    (pixelFormat == PixelFormat.Format48bppRgb) ? 3 : 4;
+                int lineSize = width * pixelSize;
                 int srcStride = image.Stride;
                 int ovrStride = overlay.Stride;
 
                 // do the job
-                byte* basePtr = (byte*) image.ImageData.ToPointer( );
-                byte* baseOvr = (byte*) overlay.ImageData.ToPointer( );
+                byte* basePtr = (byte*)image.ImageData.ToPointer();
+                byte* baseOvr = (byte*)overlay.ImageData.ToPointer();
 
                 // for each line
-                for ( int y = 0; y < height; y++ )
+                for (int y = 0; y < height; y++)
                 {
-                    ushort * ptr = (ushort*) ( basePtr + y * srcStride );
-                    ushort * ovr = (ushort*) ( baseOvr + y * ovrStride );
+                    ushort* ptr = (ushort*)(basePtr + y * srcStride);
+                    ushort* ovr = (ushort*)(baseOvr + y * ovrStride);
 
                     // for each pixel
-                    for ( int x = 0; x < lineSize; x++, ptr++, ovr++ )
+                    for (int x = 0; x < lineSize; x++, ptr++, ovr++)
                     {
-                        v = (int) *ovr - *ptr;
-                        if ( v > 0 )
+                        v = (int)*ovr - *ptr;
+                        if (v > 0)
                         {
-                            *ptr += (ushort) ( ( stepSize < v ) ? stepSize : v );
+                            *ptr += (ushort)((stepSize < v) ? stepSize : v);
                         }
-                        else if ( v < 0 )
+                        else if (v < 0)
                         {
                             v = -v;
-                            *ptr -= (ushort) ( ( stepSize < v ) ? stepSize : v );
+                            *ptr -= (ushort)((stepSize < v) ? stepSize : v);
                         }
                     }
                 }

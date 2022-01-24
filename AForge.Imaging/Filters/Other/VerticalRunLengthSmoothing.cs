@@ -65,7 +65,7 @@ namespace AForge.Imaging.Filters
         public int MaxGapSize
         {
             get { return maxGapSize; }
-            set { maxGapSize = Math.Max( 1, Math.Min( 1000, value ) ); }
+            set { maxGapSize = Math.Max(1, Math.Min(1000, value)); }
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace AForge.Imaging.Filters
         }
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -103,7 +103,7 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="VerticalRunLengthSmoothing"/> class.
         /// </summary>
         /// 
-        public VerticalRunLengthSmoothing( )
+        public VerticalRunLengthSmoothing()
         {
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
         }
@@ -114,8 +114,8 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="maxGapSize">Maximum gap size to fill (see <see cref="MaxGapSize"/>).</param>
         ///
-        public VerticalRunLengthSmoothing( int maxGapSize )
-            : this( )
+        public VerticalRunLengthSmoothing(int maxGapSize)
+            : this()
         {
             MaxGapSize = maxGapSize;
         }
@@ -127,43 +127,43 @@ namespace AForge.Imaging.Filters
         /// <param name="image">Source image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         ///
-        protected override unsafe void ProcessFilter( UnmanagedImage image, Rectangle rect )
+        protected override unsafe void ProcessFilter(UnmanagedImage image, Rectangle rect)
         {
             int startX = rect.Left;
-            int stopX  = startX + rect.Width;
+            int stopX = startX + rect.Width;
 
             int height = rect.Height;
 
             int stride = image.Stride;
 
-            byte* basePtr = (byte*) image.ImageData.ToPointer( ) + rect.Top * stride + startX;
+            byte* basePtr = (byte*)image.ImageData.ToPointer() + rect.Top * stride + startX;
 
-            for ( int x = startX; x < stopX; x++ )
+            for (int x = startX; x < stopX; x++)
             {
                 byte* ptr = basePtr;
                 byte* columnStartPtr = ptr;
                 byte* columnEndPtr = ptr + stride * height;
 
                 // fill gaps between white pixels
-                while ( ptr < columnEndPtr )
+                while (ptr < columnEndPtr)
                 {
                     byte* gapStart = ptr;
-                    int  gapSize = 0;
+                    int gapSize = 0;
 
                     // look for non black pixel
-                    while ( ( ptr < columnEndPtr ) && ( *ptr == 0 ) )
+                    while ((ptr < columnEndPtr) && (*ptr == 0))
                     {
                         ptr += stride;
                         gapSize++;
                     }
 
                     // fill the gap between white areas
-                    if ( gapSize <= maxGapSize )
+                    if (gapSize <= maxGapSize)
                     {
-                        if ( ( processGapsWithImageBorders ) ||
-                           ( ( gapStart != columnStartPtr ) && ( ptr != columnEndPtr ) ) )
+                        if ((processGapsWithImageBorders) ||
+                           ((gapStart != columnStartPtr) && (ptr != columnEndPtr)))
                         {
-                            while ( gapStart < ptr )
+                            while (gapStart < ptr)
                             {
                                 *gapStart = 255;
                                 gapStart += stride;
@@ -172,7 +172,7 @@ namespace AForge.Imaging.Filters
                     }
 
                     // skip all non black pixels
-                    while ( ( ptr < columnEndPtr ) && ( *ptr != 0 ) )
+                    while ((ptr < columnEndPtr) && (*ptr != 0))
                     {
                         ptr += stride;
                     }

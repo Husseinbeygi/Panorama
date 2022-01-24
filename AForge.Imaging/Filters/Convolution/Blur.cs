@@ -8,10 +8,10 @@
 
 namespace AForge.Imaging.Filters
 {
-	/// <summary>
-	/// Blur filter.
-	/// </summary>
-	/// 
+    /// <summary>
+    /// Blur filter.
+    /// </summary>
+    /// 
     /// <remarks><para>The filter performs <see cref="Convolution">convolution filter</see> using
     /// the blur kernel:</para>
     /// 
@@ -47,18 +47,18 @@ namespace AForge.Imaging.Filters
     /// <seealso cref="Convolution"/>
     /// 
     public sealed class Blur : Convolution
-	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Blur"/> class.
-		/// </summary>
-		public Blur( ) : base( new int[,] {
-								{ 1, 2, 3, 2, 1 },
-								{ 2, 4, 5, 4, 2 },
-								{ 3, 5, 6, 5, 3 },
-								{ 2, 4, 5, 4, 2 },
-								{ 1, 2, 3, 2, 1 } } )
-		{
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Blur"/> class.
+        /// </summary>
+        public Blur() : base(new int[,] {
+                                { 1, 2, 3, 2, 1 },
+                                { 2, 4, 5, 4, 2 },
+                                { 3, 5, 6, 5, 3 },
+                                { 2, 4, 5, 4, 2 },
+                                { 1, 2, 3, 2, 1 } })
+        {
             base.ProcessAlpha = true;
-		}
-	}
+        }
+    }
 }

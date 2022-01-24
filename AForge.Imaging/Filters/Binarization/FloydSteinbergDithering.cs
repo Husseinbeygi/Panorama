@@ -7,10 +7,6 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-
     /// <summary>
     /// Dithering using Floyd-Steinberg error diffusion.
     /// </summary>
@@ -53,11 +49,11 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="FloydSteinbergDithering"/> class.
         /// </summary>
         /// 
-        public FloydSteinbergDithering( )
-            : base( new int[2][] {
+        public FloydSteinbergDithering()
+            : base(new int[2][] {
             new int[1] { 7 },
             new int[3] { 3, 5, 1 }
-        } )
+        })
         {
         }
     }

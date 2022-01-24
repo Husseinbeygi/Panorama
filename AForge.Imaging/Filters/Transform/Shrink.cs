@@ -7,7 +7,6 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
@@ -37,12 +36,12 @@ namespace AForge.Imaging.Filters
     /// 
     public class Shrink : BaseTransformationFilter
     {
-        private Color colorToRemove = Color.FromArgb( 0, 0, 0 );
+        private Color colorToRemove = Color.FromArgb(0, 0, 0);
         // top-left coordinates of the object (calculated by CalculateNewImageSize())
         private int minX, minY;
 
         // format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -66,7 +65,7 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="Shrink"/> class.
         /// </summary>
         /// 
-        public Shrink( )
+        public Shrink()
         {
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
             formatTranslations[PixelFormat.Format24bppRgb]    = PixelFormat.Format24bppRgb;
@@ -78,7 +77,7 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="colorToRemove">Color to remove from boundaries.</param>
         /// 
-        public Shrink( Color colorToRemove ) : this( )
+        public Shrink(Color colorToRemove) : this()
         {
             this.colorToRemove = colorToRemove;
         }
@@ -91,13 +90,13 @@ namespace AForge.Imaging.Filters
         /// 
         /// <returns>New image size - size of the destination image.</returns>
         /// 
-        protected override System.Drawing.Size CalculateNewImageSize( UnmanagedImage sourceData )
+        protected override System.Drawing.Size CalculateNewImageSize(UnmanagedImage sourceData)
         {
             // get source image size
             int width = sourceData.Width;
             int height = sourceData.Height;
             int offset = sourceData.Stride -
-                ( ( sourceData.PixelFormat == PixelFormat.Format8bppIndexed ) ? width : width * 3 );
+                ((sourceData.PixelFormat == PixelFormat.Format8bppIndexed) ? width : width * 3);
 
             // color to remove
             byte r = colorToRemove.R;
@@ -112,24 +111,24 @@ namespace AForge.Imaging.Filters
             // find rectangle which contains something except color to remove
             unsafe
             {
-                byte* src = (byte*) sourceData.ImageData.ToPointer( );
+                byte* src = (byte*)sourceData.ImageData.ToPointer();
 
-                if ( sourceData.PixelFormat == PixelFormat.Format8bppIndexed )
+                if (sourceData.PixelFormat == PixelFormat.Format8bppIndexed)
                 {
                     // grayscale
-                    for ( int y = 0; y < height; y++ )
+                    for (int y = 0; y < height; y++)
                     {
-                        for ( int x = 0; x < width; x++, src++ )
+                        for (int x = 0; x < width; x++, src++)
                         {
-                            if ( *src != g )
+                            if (*src != g)
                             {
-                                if ( x < minX )
+                                if (x < minX)
                                     minX = x;
-                                if ( x > maxX )
+                                if (x > maxX)
                                     maxX = x;
-                                if ( y < minY )
+                                if (y < minY)
                                     minY = y;
-                                if ( y > maxY )
+                                if (y > maxY)
                                     maxY = y;
                             }
                         }
@@ -139,22 +138,22 @@ namespace AForge.Imaging.Filters
                 else
                 {
                     // RGB
-                    for ( int y = 0; y < height; y++ )
+                    for (int y = 0; y < height; y++)
                     {
-                        for ( int x = 0; x < width; x++, src += 3 )
+                        for (int x = 0; x < width; x++, src += 3)
                         {
                             if (
-                                ( src[RGB.R] != r ) ||
-                                ( src[RGB.G] != g ) ||
-                                ( src[RGB.B] != b ) )
+                                (src[RGB.R] != r) ||
+                                (src[RGB.G] != g) ||
+                                (src[RGB.B] != b))
                             {
-                                if ( x < minX )
+                                if (x < minX)
                                     minX = x;
-                                if ( x > maxX )
+                                if (x > maxX)
                                     maxX = x;
-                                if ( y < minY )
+                                if (y < minY)
                                     minY = y;
-                                if ( y > maxY )
+                                if (y > maxY)
                                     maxY = y;
                             }
                         }
@@ -164,12 +163,12 @@ namespace AForge.Imaging.Filters
             }
 
             // check
-            if ( ( minX == width ) && ( minY == height ) && ( maxX == 0 ) && ( maxY == 0 ) )
+            if ((minX == width) && (minY == height) && (maxX == 0) && (maxY == 0))
             {
                 minX = minY = 0;
             }
 
-            return new Size( maxX - minX + 1, maxY - minY + 1 );
+            return new Size(maxX - minX + 1, maxY - minY + 1);
         }
 
         /// <summary>
@@ -179,23 +178,23 @@ namespace AForge.Imaging.Filters
         /// <param name="sourceData">Source image data.</param>
         /// <param name="destinationData">Destination image data.</param>
         /// 
-        protected override unsafe void ProcessFilter( UnmanagedImage sourceData, UnmanagedImage destinationData )
+        protected override unsafe void ProcessFilter(UnmanagedImage sourceData, UnmanagedImage destinationData)
         {
             // get destination image size
-            int newWidth  = destinationData.Width;
+            int newWidth = destinationData.Width;
             int newHeight = destinationData.Height;
 
             int srcStride = sourceData.Stride;
             int dstStride = destinationData.Stride;
-            int copySize  = newWidth;
+            int copySize = newWidth;
 
             // do the job
-            byte* src = (byte*) sourceData.ImageData.ToPointer( );
-            byte* dst = (byte*) destinationData.ImageData.ToPointer( );
+            byte* src = (byte*)sourceData.ImageData.ToPointer();
+            byte* dst = (byte*)destinationData.ImageData.ToPointer();
 
-            src += ( minY * srcStride );
+            src += (minY * srcStride);
 
-            if ( destinationData.PixelFormat == PixelFormat.Format8bppIndexed )
+            if (destinationData.PixelFormat == PixelFormat.Format8bppIndexed)
             {
                 src += minX;
             }
@@ -206,9 +205,9 @@ namespace AForge.Imaging.Filters
             }
 
             // copy image
-            for ( int y = 0; y < newHeight; y++ )
+            for (int y = 0; y < newHeight; y++)
             {
-                AForge.SystemTools.CopyUnmanagedMemory( dst, src, copySize );
+                AForge.SystemTools.CopyUnmanagedMemory(dst, src, copySize);
                 dst += dstStride;
                 src += srcStride;
             }

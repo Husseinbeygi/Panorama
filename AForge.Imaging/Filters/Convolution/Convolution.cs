@@ -8,15 +8,15 @@
 
 namespace AForge.Imaging.Filters
 {
-	using System;
+    using System;
     using System.Collections.Generic;
     using System.Drawing;
-	using System.Drawing.Imaging;
+    using System.Drawing.Imaging;
 
-	/// <summary>
-	/// Convolution filter.
-	/// </summary>
-	/// 
+    /// <summary>
+    /// Convolution filter.
+    /// </summary>
+    /// 
     /// <remarks><para>The filter implements convolution operator, which calculates each pixel
     /// of the result image as weighted sum of the correspond pixel and its neighbors in the source
     /// image. The weights are set by <see cref="Kernel">convolution kernel</see>. The weighted
@@ -49,9 +49,9 @@ namespace AForge.Imaging.Filters
     /// <para><b>Result image:</b></para>
     /// <img src="img/imaging/emboss.jpg" width="480" height="361" />
     /// </remarks>
-	/// 
+    /// 
     public class Convolution : BaseUsingCopyPartialFilter
-	{
+    {
         // convolution kernel
         private int[,] kernel;
         // division factor
@@ -66,7 +66,7 @@ namespace AForge.Imaging.Filters
         private bool processAlpha = false;
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -95,11 +95,11 @@ namespace AForge.Imaging.Filters
             get { return kernel; }
             set
             {
-                int s = value.GetLength( 0 );
+                int s = value.GetLength(0);
 
                 // check kernel size
-                if ( ( s != value.GetLength( 1 ) ) || ( s < 3 ) || ( s > 99 ) || ( s % 2 == 0 ) )
-                    throw new ArgumentException( "Invalid kernel size." );
+                if ((s != value.GetLength(1)) || (s < 3) || (s > 99) || (s % 2 == 0))
+                    throw new ArgumentException("Invalid kernel size.");
 
                 this.kernel = value;
                 this.size = s;
@@ -124,8 +124,8 @@ namespace AForge.Imaging.Filters
             get { return divisor; }
             set
             {
-                if ( value == 0 )
-                    throw new ArgumentException( "Divisor can not be equal to zero." );
+                if (value == 0)
+                    throw new ArgumentException("Divisor can not be equal to zero.");
                 divisor = value;
             }
         }
@@ -189,7 +189,7 @@ namespace AForge.Imaging.Filters
         /// <summary>
         /// Initializes a new instance of the <see cref="Convolution"/> class.
         /// </summary>
-        protected Convolution( )
+        protected Convolution()
         {
             formatTranslations[PixelFormat.Format8bppIndexed]    = PixelFormat.Format8bppIndexed;
             formatTranslations[PixelFormat.Format16bppGrayScale] = PixelFormat.Format16bppGrayScale;
@@ -214,21 +214,21 @@ namespace AForge.Imaging.Filters
         /// <exception cref="ArgumentException">Invalid kernel size is specified. Kernel must be
         /// square, its width/height should be odd and should be in the [3, 25] range.</exception>
         /// 
-        public Convolution( int[,] kernel ) : this( )
+        public Convolution(int[,] kernel) : this()
         {
             Kernel = kernel;
 
             divisor = 0;
 
             // calculate divisor
-            for ( int i = 0, n = kernel.GetLength( 0 ); i < n; i++ )
+            for (int i = 0, n = kernel.GetLength(0); i < n; i++)
             {
-                for ( int j = 0, k = kernel.GetLength( 1 ); j < k; j++ )
+                for (int j = 0, k = kernel.GetLength(1); j < k; j++)
                 {
                     divisor += kernel[i, j];
                 }
             }
-            if ( divisor == 0 )
+            if (divisor == 0)
                 divisor = 1;
         }
 
@@ -243,7 +243,7 @@ namespace AForge.Imaging.Filters
         /// square, its width/height should be odd and should be in the [3, 25] range.</exception>
         /// <exception cref="ArgumentException">Divisor can not be equal to zero.</exception>
         /// 
-        public Convolution( int[,] kernel, int divisor ) : this( )
+        public Convolution(int[,] kernel, int divisor) : this()
         {
             Kernel = kernel;
             Divisor = divisor;
@@ -257,18 +257,18 @@ namespace AForge.Imaging.Filters
         /// <param name="destination">Destination image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         /// 
-        protected override unsafe void ProcessFilter( UnmanagedImage source, UnmanagedImage destination, Rectangle rect )
+        protected override unsafe void ProcessFilter(UnmanagedImage source, UnmanagedImage destination, Rectangle rect)
         {
-            int pixelSize = Image.GetPixelFormatSize( source.PixelFormat ) / 8;
+            int pixelSize = Image.GetPixelFormatSize(source.PixelFormat) / 8;
 
             // processing start and stop X,Y positions
-            int startX  = rect.Left;
-            int startY  = rect.Top;
-            int stopX   = startX + rect.Width;
-            int stopY   = startY + rect.Height;
+            int startX = rect.Left;
+            int startY = rect.Top;
+            int stopX = startX + rect.Width;
+            int stopY = startY + rect.Height;
 
             // check pixel size to find if we deal with 8 or 16 bpp channels
-            if ( ( pixelSize <= 4 ) && ( pixelSize != 2 ) )
+            if ((pixelSize <= 4) && (pixelSize != 2))
             {
                 int srcStride = source.Stride;
                 int dstStride = destination.Stride;
@@ -276,29 +276,29 @@ namespace AForge.Imaging.Filters
                 int srcOffset = srcStride - rect.Width * pixelSize;
                 int dstOffset = dstStride - rect.Width * pixelSize;
 
-                byte* src = (byte*) source.ImageData.ToPointer( );
-                byte* dst = (byte*) destination.ImageData.ToPointer( );
+                byte* src = (byte*)source.ImageData.ToPointer();
+                byte* dst = (byte*)destination.ImageData.ToPointer();
 
                 // allign pointers to the first pixel to process
-                src += ( startY * srcStride + startX * pixelSize );
-                dst += ( startY * dstStride + startX * pixelSize );
+                src += (startY * srcStride + startX * pixelSize);
+                dst += (startY * dstStride + startX * pixelSize);
 
                 // do the processing job
-                if ( destination.PixelFormat == PixelFormat.Format8bppIndexed )
+                if (destination.PixelFormat == PixelFormat.Format8bppIndexed)
                 {
                     // grayscale image
-                    Process8bppImage( src, dst, srcStride, dstStride, srcOffset, dstOffset, startX, startY, stopX, stopY );
+                    Process8bppImage(src, dst, srcStride, dstStride, srcOffset, dstOffset, startX, startY, stopX, stopY);
                 }
                 else
                 {
                     // RGB image
-                    if ( ( pixelSize == 3 ) || ( !processAlpha ) )
+                    if ((pixelSize == 3) || (!processAlpha))
                     {
-                        Process24bppImage( src, dst, srcStride, dstStride, srcOffset, dstOffset, startX, startY, stopX, stopY, pixelSize );
+                        Process24bppImage(src, dst, srcStride, dstStride, srcOffset, dstOffset, startX, startY, stopX, stopY, pixelSize);
                     }
                     else
                     {
-                        Process32bppImage( src, dst, srcStride, dstStride, srcOffset, dstOffset, startX, startY, stopX, stopY );
+                        Process32bppImage(src, dst, srcStride, dstStride, srcOffset, dstOffset, startX, startY, stopX, stopY);
                     }
                 }
             }
@@ -310,37 +310,37 @@ namespace AForge.Imaging.Filters
                 int srcStride = source.Stride / 2;
 
                 // base pointers
-                ushort* baseSrc = (ushort*) source.ImageData.ToPointer( );
-                ushort* baseDst = (ushort*) destination.ImageData.ToPointer( );
+                ushort* baseSrc = (ushort*)source.ImageData.ToPointer();
+                ushort* baseDst = (ushort*)destination.ImageData.ToPointer();
 
                 // allign pointers by X
-                baseSrc += ( startX * pixelSize );
-                baseDst += ( startX * pixelSize );
+                baseSrc += (startX * pixelSize);
+                baseDst += (startX * pixelSize);
 
-                if ( source.PixelFormat == PixelFormat.Format16bppGrayScale )
+                if (source.PixelFormat == PixelFormat.Format16bppGrayScale)
                 {
                     // 16 bpp grayscale image
-                    Process16bppImage( baseSrc, baseDst, srcStride, dstStride, startX, startY, stopX, stopY );
+                    Process16bppImage(baseSrc, baseDst, srcStride, dstStride, startX, startY, stopX, stopY);
                 }
                 else
                 {
                     // RGB image
-                    if ( ( pixelSize == 3 ) || ( !processAlpha ) )
+                    if ((pixelSize == 3) || (!processAlpha))
                     {
-                        Process48bppImage( baseSrc, baseDst, srcStride, dstStride, startX, startY, stopX, stopY, pixelSize );
+                        Process48bppImage(baseSrc, baseDst, srcStride, dstStride, startX, startY, stopX, stopY, pixelSize);
                     }
                     else
                     {
-                        Process64bppImage( baseSrc, baseDst, srcStride, dstStride, startX, startY, stopX, stopY );
+                        Process64bppImage(baseSrc, baseDst, srcStride, dstStride, startX, startY, stopX, stopY);
                     }
                 }
             }
         }
 
         // Process 8 bpp grayscale images
-        private unsafe void Process8bppImage( byte* src, byte* dst,
+        private unsafe void Process8bppImage(byte* src, byte* dst,
                                               int srcStride, int dstStride, int srcOffset, int dstOffset,
-                                              int startX, int startY, int stopX, int stopY )
+                                              int startX, int startY, int stopX, int stopY)
         {
             // loop and array indexes
             int i, j, t, k, ir, jr;
@@ -355,37 +355,37 @@ namespace AForge.Imaging.Filters
             int processedKernelSize;
 
             // for each line
-            for ( int y = startY; y < stopY; y++ )
+            for (int y = startY; y < stopY; y++)
             {
                 // for each pixel
-                for ( int x = startX; x < stopX; x++, src++, dst++ )
+                for (int x = startX; x < stopX; x++, src++, dst++)
                 {
                     g = div = processedKernelSize = 0;
 
                     // for each kernel row
-                    for ( i = 0; i < size; i++ )
+                    for (i = 0; i < size; i++)
                     {
                         ir = i - radius;
                         t = y + ir;
 
                         // skip row
-                        if ( t < startY )
+                        if (t < startY)
                             continue;
                         // break
-                        if ( t >= stopY )
+                        if (t >= stopY)
                             break;
 
                         // for each kernel column
-                        for ( j = 0; j < size; j++ )
+                        for (j = 0; j < size; j++)
                         {
                             jr = j - radius;
                             t = x + jr;
 
                             // skip column
-                            if ( t < startX )
+                            if (t < startX)
                                 continue;
 
-                            if ( t < stopX )
+                            if (t < stopX)
                             {
                                 k = kernel[i, j];
 
@@ -397,7 +397,7 @@ namespace AForge.Imaging.Filters
                     }
 
                     // check if all kernel elements were processed
-                    if ( processedKernelSize == kernelSize )
+                    if (processedKernelSize == kernelSize)
                     {
                         // all kernel elements are processed - we are not on the edge
                         div = divisor;
@@ -405,7 +405,7 @@ namespace AForge.Imaging.Filters
                     else
                     {
                         // we are on edge. do we need to use dynamic divisor or not?
-                        if ( !dynamicDivisorForEdges )
+                        if (!dynamicDivisorForEdges)
                         {
                             // do
                             div = divisor;
@@ -413,12 +413,12 @@ namespace AForge.Imaging.Filters
                     }
 
                     // check divider
-                    if ( div != 0 )
+                    if (div != 0)
                     {
                         g /= div;
                     }
                     g += threshold;
-                    *dst = (byte) ( ( g > 255 ) ? 255 : ( ( g < 0 ) ? 0 : g ) );
+                    *dst = (byte)((g > 255) ? 255 : ((g < 0) ? 0 : g));
                 }
                 src += srcOffset;
                 dst += dstOffset;
@@ -426,9 +426,9 @@ namespace AForge.Imaging.Filters
         }
 
         // Process 24 bpp images or 32 bpp images with copying alpha channel
-        private unsafe void Process24bppImage( byte* src, byte* dst,
+        private unsafe void Process24bppImage(byte* src, byte* dst,
                                                int srcStride, int dstStride, int srcOffset, int dstOffset,
-                                               int startX, int startY, int stopX, int stopY, int pixelSize )
+                                               int startX, int startY, int stopX, int stopY, int pixelSize)
         {
             // loop and array indexes
             int i, j, t, k, ir, jr;
@@ -445,37 +445,37 @@ namespace AForge.Imaging.Filters
             byte* p;
 
             // for each line
-            for ( int y = startY; y < stopY; y++ )
+            for (int y = startY; y < stopY; y++)
             {
                 // for each pixel
-                for ( int x = startX; x < stopX; x++, src += pixelSize, dst += pixelSize )
+                for (int x = startX; x < stopX; x++, src += pixelSize, dst += pixelSize)
                 {
                     r = g = b = div = processedKernelSize = 0;
 
                     // for each kernel row
-                    for ( i = 0; i < size; i++ )
+                    for (i = 0; i < size; i++)
                     {
                         ir = i - radius;
                         t = y + ir;
 
                         // skip row
-                        if ( t < startY )
+                        if (t < startY)
                             continue;
                         // break
-                        if ( t >= stopY )
+                        if (t >= stopY)
                             break;
 
                         // for each kernel column
-                        for ( j = 0; j < size; j++ )
+                        for (j = 0; j < size; j++)
                         {
                             jr = j - radius;
                             t = x + jr;
 
                             // skip column
-                            if ( t < startX )
+                            if (t < startX)
                                 continue;
 
-                            if ( t < stopX )
+                            if (t < stopX)
                             {
                                 k = kernel[i, j];
                                 p = &src[ir * srcStride + jr * pixelSize];
@@ -492,7 +492,7 @@ namespace AForge.Imaging.Filters
                     }
 
                     // check if all kernel elements were processed
-                    if ( processedKernelSize == kernelSize )
+                    if (processedKernelSize == kernelSize)
                     {
                         // all kernel elements are processed - we are not on the edge
                         div = divisor;
@@ -500,7 +500,7 @@ namespace AForge.Imaging.Filters
                     else
                     {
                         // we are on edge. do we need to use dynamic divisor or not?
-                        if ( !dynamicDivisorForEdges )
+                        if (!dynamicDivisorForEdges)
                         {
                             // do
                             div = divisor;
@@ -508,7 +508,7 @@ namespace AForge.Imaging.Filters
                     }
 
                     // check divider
-                    if ( div != 0 )
+                    if (div != 0)
                     {
                         r /= div;
                         g /= div;
@@ -518,12 +518,12 @@ namespace AForge.Imaging.Filters
                     g += threshold;
                     b += threshold;
 
-                    dst[RGB.R] = (byte) ( ( r > 255 ) ? 255 : ( ( r < 0 ) ? 0 : r ) );
-                    dst[RGB.G] = (byte) ( ( g > 255 ) ? 255 : ( ( g < 0 ) ? 0 : g ) );
-                    dst[RGB.B] = (byte) ( ( b > 255 ) ? 255 : ( ( b < 0 ) ? 0 : b ) );
+                    dst[RGB.R] = (byte)((r > 255) ? 255 : ((r < 0) ? 0 : r));
+                    dst[RGB.G] = (byte)((g > 255) ? 255 : ((g < 0) ? 0 : g));
+                    dst[RGB.B] = (byte)((b > 255) ? 255 : ((b < 0) ? 0 : b));
 
                     // take care of alpha channel
-                    if ( pixelSize == 4 )
+                    if (pixelSize == 4)
                         dst[RGB.A] = src[RGB.A];
                 }
                 src += srcOffset;
@@ -532,9 +532,9 @@ namespace AForge.Imaging.Filters
         }
 
         // Process 32 bpp images including alpha channel
-        private unsafe void Process32bppImage( byte* src, byte* dst,
+        private unsafe void Process32bppImage(byte* src, byte* dst,
                                                int srcStride, int dstStride, int srcOffset, int dstOffset,
-                                               int startX, int startY, int stopX, int stopY )
+                                               int startX, int startY, int stopX, int stopY)
         {
             // loop and array indexes
             int i, j, t, k, ir, jr;
@@ -551,37 +551,37 @@ namespace AForge.Imaging.Filters
             byte* p;
 
             // for each line
-            for ( int y = startY; y < stopY; y++ )
+            for (int y = startY; y < stopY; y++)
             {
                 // for each pixel
-                for ( int x = startX; x < stopX; x++, src += 4, dst += 4 )
+                for (int x = startX; x < stopX; x++, src += 4, dst += 4)
                 {
                     r = g = b = a = div = processedKernelSize = 0;
 
                     // for each kernel row
-                    for ( i = 0; i < size; i++ )
+                    for (i = 0; i < size; i++)
                     {
                         ir = i - radius;
                         t = y + ir;
 
                         // skip row
-                        if ( t < startY )
+                        if (t < startY)
                             continue;
                         // break
-                        if ( t >= stopY )
+                        if (t >= stopY)
                             break;
 
                         // for each kernel column
-                        for ( j = 0; j < size; j++ )
+                        for (j = 0; j < size; j++)
                         {
                             jr = j - radius;
                             t = x + jr;
 
                             // skip column
-                            if ( t < startX )
+                            if (t < startX)
                                 continue;
 
-                            if ( t < stopX )
+                            if (t < stopX)
                             {
                                 k = kernel[i, j];
                                 p = &src[ir * srcStride + jr * 4];
@@ -599,7 +599,7 @@ namespace AForge.Imaging.Filters
                     }
 
                     // check if all kernel elements were processed
-                    if ( processedKernelSize == kernelSize )
+                    if (processedKernelSize == kernelSize)
                     {
                         // all kernel elements are processed - we are not on the edge
                         div = divisor;
@@ -607,7 +607,7 @@ namespace AForge.Imaging.Filters
                     else
                     {
                         // we are on edge. do we need to use dynamic divisor or not?
-                        if ( !dynamicDivisorForEdges )
+                        if (!dynamicDivisorForEdges)
                         {
                             // do
                             div = divisor;
@@ -615,7 +615,7 @@ namespace AForge.Imaging.Filters
                     }
 
                     // check divider
-                    if ( div != 0 )
+                    if (div != 0)
                     {
                         r /= div;
                         g /= div;
@@ -627,10 +627,10 @@ namespace AForge.Imaging.Filters
                     b += threshold;
                     a += threshold;
 
-                    dst[RGB.R] = (byte) ( ( r > 255 ) ? 255 : ( ( r < 0 ) ? 0 : r ) );
-                    dst[RGB.G] = (byte) ( ( g > 255 ) ? 255 : ( ( g < 0 ) ? 0 : g ) );
-                    dst[RGB.B] = (byte) ( ( b > 255 ) ? 255 : ( ( b < 0 ) ? 0 : b ) );
-                    dst[RGB.A] = (byte) ( ( a > 255 ) ? 255 : ( ( a < 0 ) ? 0 : a ) );
+                    dst[RGB.R] = (byte)((r > 255) ? 255 : ((r < 0) ? 0 : r));
+                    dst[RGB.G] = (byte)((g > 255) ? 255 : ((g < 0) ? 0 : g));
+                    dst[RGB.B] = (byte)((b > 255) ? 255 : ((b < 0) ? 0 : b));
+                    dst[RGB.A] = (byte)((a > 255) ? 255 : ((a < 0) ? 0 : a));
                 }
                 src += srcOffset;
                 dst += dstOffset;
@@ -638,8 +638,8 @@ namespace AForge.Imaging.Filters
         }
 
         // Process 16 bpp grayscale images
-        private unsafe void Process16bppImage( ushort* baseSrc, ushort* baseDst, int srcStride, int dstStride,
-                                               int startX, int startY, int stopX, int stopY )
+        private unsafe void Process16bppImage(ushort* baseSrc, ushort* baseDst, int srcStride, int dstStride,
+                                               int startX, int startY, int stopX, int stopY)
         {
             // loop and array indexes
             int i, j, t, k, ir, jr;
@@ -654,40 +654,40 @@ namespace AForge.Imaging.Filters
             int processedKernelSize;
 
             // for each line
-            for ( int y = startY; y < stopY; y++ )
+            for (int y = startY; y < stopY; y++)
             {
                 ushort* src = baseSrc + y * srcStride;
                 ushort* dst = baseDst + y * dstStride;
 
                 // for each pixel
-                for ( int x = startX; x < stopX; x++, src++, dst++ )
+                for (int x = startX; x < stopX; x++, src++, dst++)
                 {
                     g = div = processedKernelSize = 0;
 
                     // for each kernel row
-                    for ( i = 0; i < size; i++ )
+                    for (i = 0; i < size; i++)
                     {
                         ir = i - radius;
                         t = y + ir;
 
                         // skip row
-                        if ( t < startY )
+                        if (t < startY)
                             continue;
                         // break
-                        if ( t >= stopY )
+                        if (t >= stopY)
                             break;
 
                         // for each kernel column
-                        for ( j = 0; j < size; j++ )
+                        for (j = 0; j < size; j++)
                         {
                             jr = j - radius;
                             t = x + jr;
 
                             // skip column
-                            if ( t < startX )
+                            if (t < startX)
                                 continue;
 
-                            if ( t < stopX )
+                            if (t < stopX)
                             {
                                 k = kernel[i, j];
 
@@ -699,7 +699,7 @@ namespace AForge.Imaging.Filters
                     }
 
                     // check if all kernel elements were processed
-                    if ( processedKernelSize == kernelSize )
+                    if (processedKernelSize == kernelSize)
                     {
                         // all kernel elements are processed - we are not on the edge
                         div = divisor;
@@ -707,7 +707,7 @@ namespace AForge.Imaging.Filters
                     else
                     {
                         // we are on edge. do we need to use dynamic divisor or not?
-                        if ( !dynamicDivisorForEdges )
+                        if (!dynamicDivisorForEdges)
                         {
                             // do
                             div = divisor;
@@ -715,19 +715,19 @@ namespace AForge.Imaging.Filters
                     }
 
                     // check divider
-                    if ( div != 0 )
+                    if (div != 0)
                     {
                         g /= div;
                     }
                     g += threshold;
-                    *dst = (ushort) ( ( g > 65535 ) ? 65535 : ( ( g < 0 ) ? 0 : g ) );
+                    *dst = (ushort)((g > 65535) ? 65535 : ((g < 0) ? 0 : g));
                 }
             }
         }
 
         // Process 48 bpp images or 64 bpp images with copying alpha channel
-        private unsafe void Process48bppImage( ushort* baseSrc, ushort* baseDst, int srcStride, int dstStride,
-                                               int startX, int startY, int stopX, int stopY, int pixelSize )
+        private unsafe void Process48bppImage(ushort* baseSrc, ushort* baseDst, int srcStride, int dstStride,
+                                               int startX, int startY, int stopX, int stopY, int pixelSize)
         {
             // loop and array indexes
             int i, j, t, k, ir, jr;
@@ -744,40 +744,40 @@ namespace AForge.Imaging.Filters
             ushort* p;
 
             // for each line
-            for ( int y = startY; y < stopY; y++ )
+            for (int y = startY; y < stopY; y++)
             {
                 ushort* src = baseSrc + y * srcStride;
                 ushort* dst = baseDst + y * dstStride;
 
                 // for each pixel
-                for ( int x = startX; x < stopX; x++, src += pixelSize, dst += pixelSize )
+                for (int x = startX; x < stopX; x++, src += pixelSize, dst += pixelSize)
                 {
                     r = g = b = div = processedKernelSize = 0;
 
                     // for each kernel row
-                    for ( i = 0; i < size; i++ )
+                    for (i = 0; i < size; i++)
                     {
                         ir = i - radius;
                         t = y + ir;
 
                         // skip row
-                        if ( t < startY )
+                        if (t < startY)
                             continue;
                         // break
-                        if ( t >= stopY )
+                        if (t >= stopY)
                             break;
 
                         // for each kernel column
-                        for ( j = 0; j < size; j++ )
+                        for (j = 0; j < size; j++)
                         {
                             jr = j - radius;
                             t = x + jr;
 
                             // skip column
-                            if ( t < startX )
+                            if (t < startX)
                                 continue;
 
-                            if ( t < stopX )
+                            if (t < stopX)
                             {
                                 k = kernel[i, j];
                                 p = &src[ir * srcStride + jr * pixelSize];
@@ -794,7 +794,7 @@ namespace AForge.Imaging.Filters
                     }
 
                     // check if all kernel elements were processed
-                    if ( processedKernelSize == kernelSize )
+                    if (processedKernelSize == kernelSize)
                     {
                         // all kernel elements are processed - we are not on the edge
                         div = divisor;
@@ -802,7 +802,7 @@ namespace AForge.Imaging.Filters
                     else
                     {
                         // we are on edge. do we need to use dynamic divisor or not?
-                        if ( !dynamicDivisorForEdges )
+                        if (!dynamicDivisorForEdges)
                         {
                             // do
                             div = divisor;
@@ -810,7 +810,7 @@ namespace AForge.Imaging.Filters
                     }
 
                     // check divider
-                    if ( div != 0 )
+                    if (div != 0)
                     {
                         r /= div;
                         g /= div;
@@ -820,20 +820,20 @@ namespace AForge.Imaging.Filters
                     g += threshold;
                     b += threshold;
 
-                    dst[RGB.R] = (ushort) ( ( r > 65535 ) ? 65535 : ( ( r < 0 ) ? 0 : r ) );
-                    dst[RGB.G] = (ushort) ( ( g > 65535 ) ? 65535 : ( ( g < 0 ) ? 0 : g ) );
-                    dst[RGB.B] = (ushort) ( ( b > 65535 ) ? 65535 : ( ( b < 0 ) ? 0 : b ) );
+                    dst[RGB.R] = (ushort)((r > 65535) ? 65535 : ((r < 0) ? 0 : r));
+                    dst[RGB.G] = (ushort)((g > 65535) ? 65535 : ((g < 0) ? 0 : g));
+                    dst[RGB.B] = (ushort)((b > 65535) ? 65535 : ((b < 0) ? 0 : b));
 
                     // take care of alpha channel
-                    if ( pixelSize == 4 )
+                    if (pixelSize == 4)
                         dst[RGB.A] = src[RGB.A];
                 }
             }
         }
 
         // Process 64 bpp images including alpha channel
-        private unsafe void Process64bppImage( ushort* baseSrc, ushort* baseDst, int srcStride, int dstStride,
-                                               int startX, int startY, int stopX, int stopY )
+        private unsafe void Process64bppImage(ushort* baseSrc, ushort* baseDst, int srcStride, int dstStride,
+                                               int startX, int startY, int stopX, int stopY)
         {
             // loop and array indexes
             int i, j, t, k, ir, jr;
@@ -850,40 +850,40 @@ namespace AForge.Imaging.Filters
             ushort* p;
 
             // for each line
-            for ( int y = startY; y < stopY; y++ )
+            for (int y = startY; y < stopY; y++)
             {
                 ushort* src = baseSrc + y * srcStride;
                 ushort* dst = baseDst + y * dstStride;
 
                 // for each pixel
-                for ( int x = startX; x < stopX; x++, src += 4, dst += 4 )
+                for (int x = startX; x < stopX; x++, src += 4, dst += 4)
                 {
                     r = g = b = a = div = processedKernelSize = 0;
 
                     // for each kernel row
-                    for ( i = 0; i < size; i++ )
+                    for (i = 0; i < size; i++)
                     {
                         ir = i - radius;
                         t = y + ir;
 
                         // skip row
-                        if ( t < startY )
+                        if (t < startY)
                             continue;
                         // break
-                        if ( t >= stopY )
+                        if (t >= stopY)
                             break;
 
                         // for each kernel column
-                        for ( j = 0; j < size; j++ )
+                        for (j = 0; j < size; j++)
                         {
                             jr = j - radius;
                             t = x + jr;
 
                             // skip column
-                            if ( t < startX )
+                            if (t < startX)
                                 continue;
 
-                            if ( t < stopX )
+                            if (t < stopX)
                             {
                                 k = kernel[i, j];
                                 p = &src[ir * srcStride + jr * 4];
@@ -901,7 +901,7 @@ namespace AForge.Imaging.Filters
                     }
 
                     // check if all kernel elements were processed
-                    if ( processedKernelSize == kernelSize )
+                    if (processedKernelSize == kernelSize)
                     {
                         // all kernel elements are processed - we are not on the edge
                         div = divisor;
@@ -909,7 +909,7 @@ namespace AForge.Imaging.Filters
                     else
                     {
                         // we are on edge. do we need to use dynamic divisor or not?
-                        if ( !dynamicDivisorForEdges )
+                        if (!dynamicDivisorForEdges)
                         {
                             // do
                             div = divisor;
@@ -917,7 +917,7 @@ namespace AForge.Imaging.Filters
                     }
 
                     // check divider
-                    if ( div != 0 )
+                    if (div != 0)
                     {
                         r /= div;
                         g /= div;
@@ -929,10 +929,10 @@ namespace AForge.Imaging.Filters
                     b += threshold;
                     a += threshold;
 
-                    dst[RGB.R] = (ushort) ( ( r > 65535 ) ? 65535 : ( ( r < 0 ) ? 0 : r ) );
-                    dst[RGB.G] = (ushort) ( ( g > 65535 ) ? 65535 : ( ( g < 0 ) ? 0 : g ) );
-                    dst[RGB.B] = (ushort) ( ( b > 65535 ) ? 65535 : ( ( b < 0 ) ? 0 : b ) );
-                    dst[RGB.A] = (ushort) ( ( a > 65535 ) ? 65535 : ( ( a < 0 ) ? 0 : a ) );
+                    dst[RGB.R] = (ushort)((r > 65535) ? 65535 : ((r < 0) ? 0 : r));
+                    dst[RGB.G] = (ushort)((g > 65535) ? 65535 : ((g < 0) ? 0 : g));
+                    dst[RGB.B] = (ushort)((b > 65535) ? 65535 : ((b < 0) ? 0 : b));
+                    dst[RGB.A] = (ushort)((a > 65535) ? 65535 : ((a < 0) ? 0 : a));
                 }
             }
         }

@@ -8,10 +8,9 @@
 
 namespace AForge.Imaging.ColorReduction
 {
-    using System;
+    using AForge.Imaging;
     using System.Collections.Generic;
     using System.Drawing;
-    using AForge.Imaging;
 
     // Color cube used by Median Cut color quantization algorithm
     internal class MedianCutCube
@@ -47,11 +46,11 @@ namespace AForge.Imaging.ColorReduction
         {
             get
             {
-                if ( cubeColor == null )
+                if (cubeColor == null)
                 {
                     int red = 0, green = 0, blue = 0;
 
-                    foreach ( Color color in colors )
+                    foreach (Color color in colors)
                     {
                         red   += color.R;
                         green += color.G;
@@ -60,21 +59,21 @@ namespace AForge.Imaging.ColorReduction
 
                     int colorsCount = colors.Count;
 
-                    if ( colorsCount != 0 )
+                    if (colorsCount != 0)
                     {
                         red   /= colorsCount;
                         green /= colorsCount;
                         blue  /= colorsCount;
                     }
 
-                    cubeColor = Color.FromArgb( red, green, blue );
+                    cubeColor = Color.FromArgb(red, green, blue);
                 }
 
                 return cubeColor.Value;
             }
         }
 
-        public MedianCutCube( List<Color> colors )
+        public MedianCutCube(List<Color> colors)
         {
             this.colors = colors;
 
@@ -82,69 +81,69 @@ namespace AForge.Imaging.ColorReduction
             minR = minG = minB = 255;
             maxR = maxG = maxB = 0;
 
-            foreach ( Color color in colors )
+            foreach (Color color in colors)
             {
-                if ( color.R < minR )
+                if (color.R < minR)
                     minR = color.R;
-                if ( color.R > maxR )
+                if (color.R > maxR)
                     maxR = color.R;
 
-                if ( color.G < minG )
+                if (color.G < minG)
                     minG = color.G;
-                if ( color.G > maxG )
+                if (color.G > maxG)
                     maxG = color.G;
 
-                if ( color.B < minB )
+                if (color.B < minB)
                     minB = color.B;
-                if ( color.B > maxB )
+                if (color.B > maxB)
                     maxB = color.B;
             }
         }
 
         // Split the cube into 2 smaller cubes using the specified color side for splitting
-        public void SplitAtMedian( int rgbComponent, out MedianCutCube cube1, out MedianCutCube cube2 )
+        public void SplitAtMedian(int rgbComponent, out MedianCutCube cube1, out MedianCutCube cube2)
         {
-            switch ( rgbComponent )
+            switch (rgbComponent)
             {
                 case RGB.R:
-                    colors.Sort( new RedComparer( ) );
+                    colors.Sort(new RedComparer());
                     break;
                 case RGB.G:
-                    colors.Sort( new GreenComparer( ) );
+                    colors.Sort(new GreenComparer());
                     break;
                 case RGB.B:
-                    colors.Sort( new BlueComparer( ) );
+                    colors.Sort(new BlueComparer());
                     break;
             }
 
             int median = colors.Count / 2;
 
-            cube1 = new MedianCutCube( colors.GetRange( 0, median ) );
-            cube2 = new MedianCutCube( colors.GetRange( median, colors.Count - median ) );
+            cube1 = new MedianCutCube(colors.GetRange(0, median));
+            cube2 = new MedianCutCube(colors.GetRange(median, colors.Count - median));
         }
 
         #region Different comparers used for sorting colors by different components
         private class RedComparer : IComparer<Color>
         {
-            public int Compare( Color c1, Color c2 )
+            public int Compare(Color c1, Color c2)
             {
-                return c1.R.CompareTo( c2.R );
+                return c1.R.CompareTo(c2.R);
             }
         }
 
         private class GreenComparer : IComparer<Color>
         {
-            public int Compare( Color c1, Color c2 )
+            public int Compare(Color c1, Color c2)
             {
-                return c1.G.CompareTo( c2.G );
+                return c1.G.CompareTo(c2.G);
             }
         }
 
         private class BlueComparer : IComparer<Color>
         {
-            public int Compare( Color c1, Color c2 )
+            public int Compare(Color c1, Color c2)
             {
-                return c1.B.CompareTo( c2.B );
+                return c1.B.CompareTo(c2.B);
             }
         }
         #endregion

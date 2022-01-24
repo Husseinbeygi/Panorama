@@ -68,7 +68,7 @@ namespace AForge.Imaging.Filters
             /// </summary>
             Average
         }
-        
+
         byte posterizationInterval = 64;
         PosterizationFillingType fillingType = PosterizationFillingType.Average;
 
@@ -110,7 +110,7 @@ namespace AForge.Imaging.Filters
         }
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -123,7 +123,7 @@ namespace AForge.Imaging.Filters
         /// <summary>
         /// Initializes a new instance of the <see cref="SimplePosterization"/> class.
         /// </summary>
-        public SimplePosterization( )
+        public SimplePosterization()
         {
             // initialize format translation dictionary
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
@@ -138,7 +138,7 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="fillingType">Specifies <see cref="FillingType">filling type</see> of posterization areas.</param>
         /// 
-        public SimplePosterization( PosterizationFillingType fillingType ) : this ( )
+        public SimplePosterization(PosterizationFillingType fillingType) : this()
         {
             this.fillingType = fillingType;
         }
@@ -150,44 +150,44 @@ namespace AForge.Imaging.Filters
         /// <param name="image">Source image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         ///
-        protected override unsafe void ProcessFilter( UnmanagedImage image, Rectangle rect )
+        protected override unsafe void ProcessFilter(UnmanagedImage image, Rectangle rect)
         {
             // get pixel size
-            int pixelSize = Image.GetPixelFormatSize( image.PixelFormat ) / 8;
+            int pixelSize = Image.GetPixelFormatSize(image.PixelFormat) / 8;
 
-            int startX  = rect.Left;
-            int startY  = rect.Top;
-            int stopX   = startX + rect.Width;
-            int stopY   = startY + rect.Height;
-            int offset  = image.Stride - rect.Width * pixelSize;
+            int startX = rect.Left;
+            int startY = rect.Top;
+            int stopX = startX + rect.Width;
+            int stopY = startY + rect.Height;
+            int offset = image.Stride - rect.Width * pixelSize;
 
             // calculate posterization offset
-            int posterizationOffset = ( fillingType == PosterizationFillingType.Min ) ?
-                0 : ( ( fillingType == PosterizationFillingType.Max ) ?
-                posterizationInterval - 1 : posterizationInterval / 2 );
+            int posterizationOffset = (fillingType == PosterizationFillingType.Min) ?
+                0 : ((fillingType == PosterizationFillingType.Max) ?
+                posterizationInterval - 1 : posterizationInterval / 2);
 
             // calculate mapping array
             byte[] map = new byte[256];
 
-            for ( int i = 0; i < 256; i++ )
+            for (int i = 0; i < 256; i++)
             {
-                map[i] = (byte) Math.Min( 255, ( i / posterizationInterval ) * posterizationInterval + posterizationOffset );
+                map[i] = (byte)Math.Min(255, (i / posterizationInterval) * posterizationInterval + posterizationOffset);
             }
 
             // do the job
-            byte* ptr = (byte*) image.ImageData.ToPointer( );
+            byte* ptr = (byte*)image.ImageData.ToPointer();
 
             // allign pointer to the first pixel to process
-            ptr += ( startY * image.Stride + startX * pixelSize );
+            ptr += (startY * image.Stride + startX * pixelSize);
 
             // check image format
-            if ( image.PixelFormat == PixelFormat.Format8bppIndexed )
+            if (image.PixelFormat == PixelFormat.Format8bppIndexed)
             {
                 // for each line
-                for ( int y = startY; y < stopY; y++ )
+                for (int y = startY; y < stopY; y++)
                 {
                     // for each pixel in line
-                    for ( int x = startX; x < stopX; x++, ptr++ )
+                    for (int x = startX; x < stopX; x++, ptr++)
                     {
                         *ptr = map[*ptr];
                     }
@@ -197,10 +197,10 @@ namespace AForge.Imaging.Filters
             else
             {
                 // for each line
-                for ( int y = startY; y < stopY; y++ )
+                for (int y = startY; y < stopY; y++)
                 {
                     // for each pixel in line
-                    for ( int x = startX; x < stopX; x++, ptr += pixelSize )
+                    for (int x = startX; x < stopX; x++, ptr += pixelSize)
                     {
                         ptr[RGB.R] = map[ptr[RGB.R]];
                         ptr[RGB.G] = map[ptr[RGB.G]];

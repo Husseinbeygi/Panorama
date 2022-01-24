@@ -9,10 +9,6 @@
 //
 namespace AForge.Imaging.Filters
 {
-    using System;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-
     /// <summary>
     /// Dithering using Burkes error diffusion.
     /// </summary>
@@ -54,10 +50,10 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="BurkesDithering"/> class.
         /// </summary>
         /// 
-        public BurkesDithering( ) : base( new int[2][] {
+        public BurkesDithering() : base(new int[2][] {
             new int[2] { 8, 4 },
             new int[5] { 2, 4, 8, 4, 2 }
-        } )
+        })
         {
         }
     }

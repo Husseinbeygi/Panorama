@@ -7,7 +7,6 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
@@ -54,7 +53,7 @@ namespace AForge.Imaging.Filters
     public class DifferenceEdgeDetector : BaseUsingCopyPartialFilter
     {
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -68,7 +67,7 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="DifferenceEdgeDetector"/> class.
         /// </summary>
         /// 
-        public DifferenceEdgeDetector( )
+        public DifferenceEdgeDetector()
         {
             // initialize format translation dictionary
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
@@ -82,13 +81,13 @@ namespace AForge.Imaging.Filters
         /// <param name="destination">Destination image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         /// 
-        protected override unsafe void ProcessFilter( UnmanagedImage source, UnmanagedImage destination, Rectangle rect )
+        protected override unsafe void ProcessFilter(UnmanagedImage source, UnmanagedImage destination, Rectangle rect)
         {
             // processing start and stop X,Y positions
-            int startX  = rect.Left + 1;
-            int startY  = rect.Top + 1;
-            int stopX   = startX + rect.Width - 2;
-            int stopY   = startY + rect.Height - 2;
+            int startX = rect.Left + 1;
+            int startY = rect.Top + 1;
+            int stopX = startX + rect.Width - 2;
+            int stopY = startY + rect.Height - 2;
 
             int dstStride = destination.Stride;
             int srcStride = source.Stride;
@@ -99,44 +98,44 @@ namespace AForge.Imaging.Filters
             int d, max;
 
             // data pointers
-            byte* src = (byte*) source.ImageData.ToPointer( );
-            byte* dst = (byte*) destination.ImageData.ToPointer( );
+            byte* src = (byte*)source.ImageData.ToPointer();
+            byte* dst = (byte*)destination.ImageData.ToPointer();
 
             // allign pointers
             src += srcStride * startY + startX;
             dst += dstStride * startY + startX;
 
             // for each line
-            for ( int y = startY; y < stopY; y++ )
+            for (int y = startY; y < stopY; y++)
             {
                 // for each pixel
-                for ( int x = startX; x < stopX; x++, src++, dst++ )
+                for (int x = startX; x < stopX; x++, src++, dst++)
                 {
                     // left diagonal
-                    max = (int) src[-srcStride - 1] - src[srcStride + 1];
-                    if ( max < 0 )
+                    max = (int)src[-srcStride - 1] - src[srcStride + 1];
+                    if (max < 0)
                         max = -max;
 
                     // right diagonal
-                    d = (int) src[-srcStride + 1] - src[srcStride - 1];
-                    if ( d < 0 )
+                    d = (int)src[-srcStride + 1] - src[srcStride - 1];
+                    if (d < 0)
                         d = -d;
-                    if ( d > max )
+                    if (d > max)
                         max = d;
                     // vertical
-                    d = (int) src[-srcStride] - src[srcStride];
-                    if ( d < 0 )
+                    d = (int)src[-srcStride] - src[srcStride];
+                    if (d < 0)
                         d = -d;
-                    if ( d > max )
+                    if (d > max)
                         max = d;
                     // horizontal
-                    d = (int) src[-1] - src[1];
-                    if ( d < 0 )
+                    d = (int)src[-1] - src[1];
+                    if (d < 0)
                         d = -d;
-                    if ( d > max )
+                    if (d > max)
                         max = d;
 
-                    *dst = (byte) max;
+                    *dst = (byte)max;
                 }
                 src += srcOffset;
                 dst += dstOffset;
@@ -145,7 +144,7 @@ namespace AForge.Imaging.Filters
             // draw black rectangle to remove those pixels, which were not processed
             // (this needs to be done for those cases, when filter is applied "in place" -
             // source image is modified instead of creating new copy)
-            Drawing.Rectangle( destination, rect, Color.Black );
+            Drawing.Rectangle(destination, rect, Color.Black);
         }
     }
 }

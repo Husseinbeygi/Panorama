@@ -8,11 +8,11 @@
 
 namespace AForge.Imaging.Filters
 {
+    using AForge;
     using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
-    using AForge;
 
     /// <summary>
     /// Contrast adjusting in RGB color space.
@@ -50,7 +50,7 @@ namespace AForge.Imaging.Filters
     /// 
     public class ContrastCorrection : BaseInPlacePartialFilter
     {
-        private LevelsLinear baseFilter = new LevelsLinear( );
+        private LevelsLinear baseFilter = new LevelsLinear();
         private int factor;
 
         /// <summary>
@@ -68,24 +68,24 @@ namespace AForge.Imaging.Filters
             get { return factor; }
             set
             {
-                factor = Math.Max( -127, Math.Min( 127, value ) );
+                factor = Math.Max(-127, Math.Min(127, value));
 
 
-                if ( factor > 0 )
+                if (factor > 0)
                 {
                     baseFilter.InRed = baseFilter.InGreen = baseFilter.InBlue = baseFilter.InGray =
-                        new IntRange( factor, 255 - factor );
+                        new IntRange(factor, 255 - factor);
 
                     baseFilter.OutRed = baseFilter.OutGreen = baseFilter.OutBlue = baseFilter.OutGray =
-                        new IntRange( 0, 255 );
+                        new IntRange(0, 255);
                 }
                 else
                 {
                     baseFilter.OutRed = baseFilter.OutGreen = baseFilter.OutBlue = baseFilter.OutGray =
-                        new IntRange( -factor, 255 + factor );
+                        new IntRange(-factor, 255 + factor);
 
                     baseFilter.InRed = baseFilter.InGreen = baseFilter.InBlue = baseFilter.InGray =
-                        new IntRange( 0, 255 );
+                        new IntRange(0, 255);
                 }
             }
         }
@@ -106,7 +106,7 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="ContrastCorrection"/> class.
         /// </summary>
         /// 
-        public ContrastCorrection( )
+        public ContrastCorrection()
         {
             Factor = 10;
         }
@@ -117,7 +117,7 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="factor">Contrast <see cref="Factor">adjusting factor</see>.</param>
         /// 
-        public ContrastCorrection( int factor )
+        public ContrastCorrection(int factor)
         {
             Factor = factor;
         }
@@ -129,9 +129,9 @@ namespace AForge.Imaging.Filters
         /// <param name="image">Source image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         ///
-        protected override unsafe void ProcessFilter( UnmanagedImage image, Rectangle rect )
+        protected override unsafe void ProcessFilter(UnmanagedImage image, Rectangle rect)
         {
-            baseFilter.ApplyInPlace( image, rect );
+            baseFilter.ApplyInPlace(image, rect);
         }
     }
 }

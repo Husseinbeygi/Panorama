@@ -8,7 +8,6 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
     using System.Drawing;
     using System.Drawing.Imaging;
 
@@ -38,7 +37,7 @@ namespace AForge.Imaging.Filters
         /// <remarks>The method keeps the source image unchanged and returns
         /// the result of image processing filter as new image.</remarks> 
         ///
-        Bitmap Apply( Bitmap image );
+        Bitmap Apply(Bitmap image);
 
         /// <summary>
         /// Apply filter to an image.
@@ -53,7 +52,7 @@ namespace AForge.Imaging.Filters
         /// of image processing filter as new image. The source image data are kept
         /// unchanged.</remarks>
         /// 
-        Bitmap Apply( BitmapData imageData );
+        Bitmap Apply(BitmapData imageData);
 
         /// <summary>
         /// Apply filter to an image.
@@ -67,7 +66,7 @@ namespace AForge.Imaging.Filters
         /// <remarks>The method keeps the source image unchanged and returns
         /// the result of image processing filter as new image.</remarks> 
         /// 
-        UnmanagedImage Apply( UnmanagedImage image );
+        UnmanagedImage Apply(UnmanagedImage image);
 
         /// <summary>
         /// Apply filter to an image.
@@ -86,6 +85,6 @@ namespace AForge.Imaging.Filters
         /// <exception cref="InvalidImagePropertiesException">In the case if destination image has incorrect
         /// size.</exception>
         /// 
-        void Apply( UnmanagedImage sourceImage, UnmanagedImage destinationImage );
+        void Apply(UnmanagedImage sourceImage, UnmanagedImage destinationImage);
     }
 }

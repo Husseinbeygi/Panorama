@@ -58,7 +58,7 @@ namespace AForge.Imaging.Filters
         private int size = 3;
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -76,7 +76,7 @@ namespace AForge.Imaging.Filters
         /// default structuring element - 3x3 structuring element with all elements equal to 1.
         /// </para></remarks>
         /// 
-        public Erosion( )
+        public Erosion()
         {
             // initialize format translation dictionary
             formatTranslations[PixelFormat.Format8bppIndexed]    = PixelFormat.Format8bppIndexed;
@@ -96,14 +96,14 @@ namespace AForge.Imaging.Filters
         /// 
         /// <exception cref="ArgumentException">Invalid size of structuring element.</exception>
         /// 
-        public Erosion( short[,] se )
-            : this( )
+        public Erosion(short[,] se)
+            : this()
         {
-            int s = se.GetLength( 0 );
+            int s = se.GetLength(0);
 
             // check structuring element size
-            if ( ( s != se.GetLength( 1 ) ) || ( s < 3 ) || ( s > 99 ) || ( s % 2 == 0 ) )
-                throw new ArgumentException( "Invalid size of structuring element." );
+            if ((s != se.GetLength(1)) || (s < 3) || (s > 99) || (s % 2 == 0))
+                throw new ArgumentException("Invalid size of structuring element.");
 
             this.se = se;
             this.size = s;
@@ -117,15 +117,15 @@ namespace AForge.Imaging.Filters
         /// <param name="destinationData">Destination image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         /// 
-        protected override unsafe void ProcessFilter( UnmanagedImage sourceData, UnmanagedImage destinationData, Rectangle rect )
+        protected override unsafe void ProcessFilter(UnmanagedImage sourceData, UnmanagedImage destinationData, Rectangle rect)
         {
             PixelFormat pixelFormat = sourceData.PixelFormat;
 
             // processing start and stop X,Y positions
-            int startX  = rect.Left;
-            int startY  = rect.Top;
-            int stopX   = startX + rect.Width;
-            int stopY   = startY + rect.Height;
+            int startX = rect.Left;
+            int startY = rect.Top;
+            int stopX = startX + rect.Width;
+            int stopY = startY + rect.Height;
 
             // structuring element's radius
             int r = size >> 1;
@@ -133,27 +133,27 @@ namespace AForge.Imaging.Filters
             // flag to indicate if at least one pixel for the given structuring element was found
             bool foundSomething;
 
-            if ( ( pixelFormat == PixelFormat.Format8bppIndexed ) || ( pixelFormat == PixelFormat.Format24bppRgb ) )
+            if ((pixelFormat == PixelFormat.Format8bppIndexed) || (pixelFormat == PixelFormat.Format24bppRgb))
             {
-                int pixelSize = ( pixelFormat == PixelFormat.Format8bppIndexed ) ? 1 : 3;
+                int pixelSize = (pixelFormat == PixelFormat.Format8bppIndexed) ? 1 : 3;
 
                 int dstStride = destinationData.Stride;
                 int srcStride = sourceData.Stride;
 
                 // base pointers
-                byte* baseSrc = (byte*) sourceData.ImageData.ToPointer( );
-                byte* baseDst = (byte*) destinationData.ImageData.ToPointer( );
+                byte* baseSrc = (byte*)sourceData.ImageData.ToPointer();
+                byte* baseDst = (byte*)destinationData.ImageData.ToPointer();
 
                 // allign pointers by X
-                baseSrc += ( startX * pixelSize );
-                baseDst += ( startX * pixelSize );
+                baseSrc += (startX * pixelSize);
+                baseDst += (startX * pixelSize);
 
-                if ( pixelFormat == PixelFormat.Format8bppIndexed )
+                if (pixelFormat == PixelFormat.Format8bppIndexed)
                 {
                     // grayscale image
 
                     // compute each line
-                    for ( int y = startY; y < stopY; y++ )
+                    for (int y = startY; y < stopY; y++)
                     {
                         byte* src = baseSrc + y * srcStride;
                         byte* dst = baseDst + y * dstStride;
@@ -164,48 +164,48 @@ namespace AForge.Imaging.Filters
                         int t, ir, jr, i, j;
 
                         // for each pixel
-                        for ( int x = startX; x < stopX; x++, src++, dst++ )
+                        for (int x = startX; x < stopX; x++, src++, dst++)
                         {
                             min = 255;
                             foundSomething = false;
 
                             // for each structuring element's row
-                            for ( i = 0; i < size; i++ )
+                            for (i = 0; i < size; i++)
                             {
                                 ir = i - r;
                                 t = y + ir;
 
                                 // skip row
-                                if ( t < startY )
+                                if (t < startY)
                                     continue;
                                 // break
-                                if ( t >= stopY )
+                                if (t >= stopY)
                                     break;
 
                                 // for each structuring element's column
-                                for ( j = 0; j < size; j++ )
+                                for (j = 0; j < size; j++)
                                 {
                                     jr = j - r;
                                     t = x + jr;
 
                                     // skip column
-                                    if ( t < startX )
+                                    if (t < startX)
                                         continue;
-                                    if ( t < stopX )
+                                    if (t < stopX)
                                     {
-                                        if ( se[i, j] == 1 )
+                                        if (se[i, j] == 1)
                                         {
                                             foundSomething = true;
                                             // get new MIN value
                                             v = src[ir * srcStride + jr];
-                                            if ( v < min )
+                                            if (v < min)
                                                 min = v;
                                         }
                                     }
                                 }
                             }
                             // result pixel
-                            *dst = ( foundSomething ) ? min : *src;
+                            *dst = (foundSomething) ? min : *src;
                         }
                     }
                 }
@@ -214,7 +214,7 @@ namespace AForge.Imaging.Filters
                     // 24 bpp color image
 
                     // compute each line
-                    for ( int y = startY; y < stopY; y++ )
+                    for (int y = startY; y < stopY; y++)
                     {
                         byte* src = baseSrc + y * srcStride;
                         byte* dst = baseDst + y * dstStride;
@@ -226,36 +226,36 @@ namespace AForge.Imaging.Filters
                         int t, ir, jr, i, j;
 
                         // for each pixel
-                        for ( int x = startX; x < stopX; x++, src += 3, dst += 3 )
+                        for (int x = startX; x < stopX; x++, src += 3, dst += 3)
                         {
                             minR = minG = minB = 255;
                             foundSomething = false;
 
                             // for each structuring element's row
-                            for ( i = 0; i < size; i++ )
+                            for (i = 0; i < size; i++)
                             {
                                 ir = i - r;
                                 t = y + ir;
 
                                 // skip row
-                                if ( t < startY )
+                                if (t < startY)
                                     continue;
                                 // break
-                                if ( t >= stopY )
+                                if (t >= stopY)
                                     break;
 
                                 // for each structuring element's column
-                                for ( j = 0; j < size; j++ )
+                                for (j = 0; j < size; j++)
                                 {
                                     jr = j - r;
                                     t = x + jr;
 
                                     // skip column
-                                    if ( t < startX )
+                                    if (t < startX)
                                         continue;
-                                    if ( t < stopX )
+                                    if (t < stopX)
                                     {
-                                        if ( se[i, j] == 1 )
+                                        if (se[i, j] == 1)
                                         {
                                             foundSomething = true;
                                             // get new MIN values
@@ -263,24 +263,24 @@ namespace AForge.Imaging.Filters
 
                                             // red
                                             v = p[RGB.R];
-                                            if ( v < minR )
+                                            if (v < minR)
                                                 minR = v;
 
                                             // green
                                             v = p[RGB.G];
-                                            if ( v < minG )
+                                            if (v < minG)
                                                 minG = v;
 
                                             // blue
                                             v = p[RGB.B];
-                                            if ( v < minB )
+                                            if (v < minB)
                                                 minB = v;
                                         }
                                     }
                                 }
                             }
                             // result pixel
-                            if ( foundSomething )
+                            if (foundSomething)
                             {
                                 dst[RGB.R] = minR;
                                 dst[RGB.G] = minG;
@@ -298,25 +298,25 @@ namespace AForge.Imaging.Filters
             }
             else
             {
-                int pixelSize = ( pixelFormat == PixelFormat.Format16bppGrayScale ) ? 1 : 3;
+                int pixelSize = (pixelFormat == PixelFormat.Format16bppGrayScale) ? 1 : 3;
 
                 int dstStride = destinationData.Stride / 2;
                 int srcStride = sourceData.Stride / 2;
 
                 // base pointers
-                ushort* baseSrc = (ushort*) sourceData.ImageData.ToPointer( );
-                ushort* baseDst = (ushort*) destinationData.ImageData.ToPointer( );
+                ushort* baseSrc = (ushort*)sourceData.ImageData.ToPointer();
+                ushort* baseDst = (ushort*)destinationData.ImageData.ToPointer();
 
                 // allign pointers by X
-                baseSrc += ( startX * pixelSize );
-                baseDst += ( startX * pixelSize );
+                baseSrc += (startX * pixelSize);
+                baseDst += (startX * pixelSize);
 
-                if ( pixelFormat == PixelFormat.Format16bppGrayScale )
+                if (pixelFormat == PixelFormat.Format16bppGrayScale)
                 {
                     // 16 bpp grayscale image
 
                     // compute each line
-                    for ( int y = startY; y < stopY; y++ )
+                    for (int y = startY; y < stopY; y++)
                     {
                         ushort* src = baseSrc + y * srcStride;
                         ushort* dst = baseDst + y * dstStride;
@@ -327,48 +327,48 @@ namespace AForge.Imaging.Filters
                         int t, ir, jr, i, j;
 
                         // for each pixel
-                        for ( int x = startX; x < stopX; x++, src++, dst++ )
+                        for (int x = startX; x < stopX; x++, src++, dst++)
                         {
                             min = 65535;
                             foundSomething = false;
 
                             // for each structuring element's row
-                            for ( i = 0; i < size; i++ )
+                            for (i = 0; i < size; i++)
                             {
                                 ir = i - r;
                                 t = y + ir;
 
                                 // skip row
-                                if ( t < startY )
+                                if (t < startY)
                                     continue;
                                 // break
-                                if ( t >= stopY )
+                                if (t >= stopY)
                                     break;
 
                                 // for each structuring element's column
-                                for ( j = 0; j < size; j++ )
+                                for (j = 0; j < size; j++)
                                 {
                                     jr = j - r;
                                     t = x + jr;
 
                                     // skip column
-                                    if ( t < startX )
+                                    if (t < startX)
                                         continue;
-                                    if ( t < stopX )
+                                    if (t < stopX)
                                     {
-                                        if ( se[i, j] == 1 )
+                                        if (se[i, j] == 1)
                                         {
                                             foundSomething = true;
                                             // get new MIN value
                                             v = src[ir * srcStride + jr];
-                                            if ( v < min )
+                                            if (v < min)
                                                 min = v;
                                         }
                                     }
                                 }
                             }
                             // result pixel
-                            *dst = ( foundSomething ) ? min : *src;
+                            *dst = (foundSomething) ? min : *src;
 
                         }
                     }
@@ -378,48 +378,48 @@ namespace AForge.Imaging.Filters
                     // 48 bpp color image
 
                     // compute each line
-                    for ( int y = startY; y < stopY; y++ )
+                    for (int y = startY; y < stopY; y++)
                     {
                         ushort* src = baseSrc + y * srcStride;
                         ushort* dst = baseDst + y * dstStride;
 
-                        ushort  minR, minG, minB, v;
+                        ushort minR, minG, minB, v;
                         ushort* p;
 
                         // loop and array indexes
                         int t, ir, jr, i, j;
 
                         // for each pixel
-                        for ( int x = startX; x < stopX; x++, src += 3, dst += 3 )
+                        for (int x = startX; x < stopX; x++, src += 3, dst += 3)
                         {
                             minR = minG = minB = 65535;
                             foundSomething = false;
 
                             // for each structuring element's row
-                            for ( i = 0; i < size; i++ )
+                            for (i = 0; i < size; i++)
                             {
                                 ir = i - r;
                                 t = y + ir;
 
                                 // skip row
-                                if ( t < startY )
+                                if (t < startY)
                                     continue;
                                 // break
-                                if ( t >= stopY )
+                                if (t >= stopY)
                                     break;
 
                                 // for each structuring element's column
-                                for ( j = 0; j < size; j++ )
+                                for (j = 0; j < size; j++)
                                 {
                                     jr = j - r;
                                     t = x + jr;
 
                                     // skip column
-                                    if ( t < startX )
+                                    if (t < startX)
                                         continue;
-                                    if ( t < stopX )
+                                    if (t < stopX)
                                     {
-                                        if ( se[i, j] == 1 )
+                                        if (se[i, j] == 1)
                                         {
                                             foundSomething = true;
                                             // get new MIN values
@@ -427,24 +427,24 @@ namespace AForge.Imaging.Filters
 
                                             // red
                                             v = p[RGB.R];
-                                            if ( v < minR )
+                                            if (v < minR)
                                                 minR = v;
 
                                             // green
                                             v = p[RGB.G];
-                                            if ( v < minG )
+                                            if (v < minG)
                                                 minG = v;
 
                                             // blue
                                             v = p[RGB.B];
-                                            if ( v < minB )
+                                            if (v < minB)
                                                 minB = v;
                                         }
                                     }
                                 }
                             }
                             // result pixel
-                            if ( foundSomething )
+                            if (foundSomething)
                             {
                                 dst[RGB.R] = minR;
                                 dst[RGB.G] = minG;

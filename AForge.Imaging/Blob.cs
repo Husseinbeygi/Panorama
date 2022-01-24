@@ -8,11 +8,8 @@
 
 namespace AForge.Imaging
 {
-    using System;
-    using System.Drawing;
-    using System.Drawing.Imaging;
     using System.ComponentModel;
-    using AForge;
+    using System.Drawing;
 
     /// <summary>
     /// Image's blob.
@@ -56,7 +53,7 @@ namespace AForge.Imaging
         /// the image may be extracted using <see cref="BlobCounterBase.ExtractBlobsImage( Bitmap, Blob, bool )"/>
         /// or <see cref="BlobCounterBase.ExtractBlobsImage( UnmanagedImage, Blob, bool )"/> method.</para></remarks>
         ///
-        [Browsable( false )]
+        [Browsable(false)]
         public UnmanagedImage Image
         {
             get { return image; }
@@ -72,7 +69,7 @@ namespace AForge.Imaging
         /// size of original image. If the property is set to <see langword="false"/>, the blob's
         /// image size equals to size of actual blob.</para></remarks>
         /// 
-        [Browsable( false )]
+        [Browsable(false)]
         public bool OriginalSize
         {
             get { return originalSize; }
@@ -94,7 +91,7 @@ namespace AForge.Imaging
         /// <summary>
         /// Blob's ID in the original image.
         /// </summary>
-        [Browsable( false )]
+        [Browsable(false)]
         public int ID
         {
             get { return id; }
@@ -179,7 +176,7 @@ namespace AForge.Imaging
         /// image may be extracted later using <see cref="BlobCounterBase.ExtractBlobsImage( Bitmap, Blob, bool )"/>
         /// or <see cref="BlobCounterBase.ExtractBlobsImage( UnmanagedImage, Blob, bool )"/> method.</para></remarks>
         /// 
-        public Blob( int id, Rectangle rect )
+        public Blob(int id, Rectangle rect)
         {
             this.id   = id;
             this.rect = rect;
@@ -195,7 +192,7 @@ namespace AForge.Imaging
         /// image may be extracted later using <see cref="BlobCounterBase.ExtractBlobsImage( Bitmap, Blob, bool )"/>
         /// or <see cref="BlobCounterBase.ExtractBlobsImage( UnmanagedImage, Blob, bool )"/> method.</para></remarks>
         /// 
-        public Blob( Blob source )
+        public Blob(Blob source)
         {
             // copy everything except image
             id   = source.id;

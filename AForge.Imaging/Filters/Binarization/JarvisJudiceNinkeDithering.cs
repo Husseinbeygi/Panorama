@@ -9,10 +9,6 @@
 //
 namespace AForge.Imaging.Filters
 {
-    using System;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-
     /// <summary>
     /// Dithering using Jarvis, Judice and Ninke error diffusion.
     /// </summary>
@@ -55,11 +51,11 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="JarvisJudiceNinkeDithering"/> class.
         /// </summary>
         /// 
-        public JarvisJudiceNinkeDithering( ) : base( new int[3][] {
+        public JarvisJudiceNinkeDithering() : base(new int[3][] {
             new int[2] { 7, 5 },
             new int[5] { 3, 5, 7, 5, 3 },
             new int[5] { 1, 3, 5, 3, 1 }
-        } )
+        })
         {
         }
     }

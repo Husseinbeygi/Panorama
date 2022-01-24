@@ -7,7 +7,6 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
@@ -37,7 +36,7 @@ namespace AForge.Imaging.Filters
     public sealed class Invert : BaseInPlacePartialFilter
     {
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -46,11 +45,11 @@ namespace AForge.Imaging.Filters
         {
             get { return formatTranslations; }
         }
-        
+
         /// <summary>   
         /// Initializes a new instance of the <see cref="Invert"/> class.
         /// </summary>
-        public Invert( )
+        public Invert()
         {
             formatTranslations[PixelFormat.Format8bppIndexed]    = PixelFormat.Format8bppIndexed;
             formatTranslations[PixelFormat.Format24bppRgb]       = PixelFormat.Format24bppRgb;
@@ -65,35 +64,35 @@ namespace AForge.Imaging.Filters
         /// <param name="image">Source image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
         ///
-        protected override unsafe void ProcessFilter( UnmanagedImage image, Rectangle rect )
+        protected override unsafe void ProcessFilter(UnmanagedImage image, Rectangle rect)
         {
-            int pixelSize = ( ( image.PixelFormat == PixelFormat.Format8bppIndexed ) ||
-                              ( image.PixelFormat == PixelFormat.Format16bppGrayScale ) ) ? 1 : 3;
+            int pixelSize = ((image.PixelFormat == PixelFormat.Format8bppIndexed) ||
+                              (image.PixelFormat == PixelFormat.Format16bppGrayScale)) ? 1 : 3;
 
-            int startY  = rect.Top;
-            int stopY   = startY + rect.Height;
+            int startY = rect.Top;
+            int stopY = startY + rect.Height;
 
-            int startX  = rect.Left * pixelSize;
-            int stopX   = startX + rect.Width * pixelSize;
+            int startX = rect.Left * pixelSize;
+            int stopX = startX + rect.Width * pixelSize;
 
-            byte* basePtr = (byte*) image.ImageData.ToPointer( );
+            byte* basePtr = (byte*)image.ImageData.ToPointer();
 
             if (
-                ( image.PixelFormat == PixelFormat.Format8bppIndexed ) ||
-                ( image.PixelFormat == PixelFormat.Format24bppRgb ) )
+                (image.PixelFormat == PixelFormat.Format8bppIndexed) ||
+                (image.PixelFormat == PixelFormat.Format24bppRgb))
             {
-                int offset = image.Stride - ( stopX - startX );
+                int offset = image.Stride - (stopX - startX);
 
                 // allign pointer to the first pixel to process
-                byte* ptr = basePtr + ( startY * image.Stride + rect.Left * pixelSize );
+                byte* ptr = basePtr + (startY * image.Stride + rect.Left * pixelSize);
 
                 // invert
-                for ( int y = startY; y < stopY; y++ )
+                for (int y = startY; y < stopY; y++)
                 {
-                    for ( int x = startX; x < stopX; x++, ptr++ )
+                    for (int x = startX; x < stopX; x++, ptr++)
                     {
                         // ivert each pixel
-                        *ptr = (byte) ( 255 - *ptr );
+                        *ptr = (byte)(255 - *ptr);
                     }
                     ptr += offset;
                 }
@@ -103,17 +102,17 @@ namespace AForge.Imaging.Filters
                 int stride = image.Stride;
 
                 // allign pointer to the first pixel to process
-                basePtr += ( startY * image.Stride + rect.Left * pixelSize * 2 );
+                basePtr += (startY * image.Stride + rect.Left * pixelSize * 2);
 
                 // invert
-                for ( int y = startY; y < stopY; y++ )
+                for (int y = startY; y < stopY; y++)
                 {
-                    ushort* ptr = (ushort*) ( basePtr );
+                    ushort* ptr = (ushort*)(basePtr);
 
-                    for ( int x = startX; x < stopX; x++, ptr++ )
+                    for (int x = startX; x < stopX; x++, ptr++)
                     {
                         // ivert each pixel
-                        *ptr = (ushort) ( 65535 - *ptr );
+                        *ptr = (ushort)(65535 - *ptr);
                     }
                     basePtr += stride;
                 }

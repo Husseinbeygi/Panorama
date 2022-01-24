@@ -10,7 +10,6 @@
 //
 namespace AForge.Imaging
 {
-    using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
@@ -43,7 +42,7 @@ namespace AForge.Imaging
         /// 
         /// <returns>Returns list of found block matches.</returns>
         /// 
-        List<BlockMatch> ProcessImage( Bitmap sourceImage, List<IntPoint> coordinates, Bitmap searchImage );
+        List<BlockMatch> ProcessImage(Bitmap sourceImage, List<IntPoint> coordinates, Bitmap searchImage);
 
         /// <summary>
         /// Process images matching blocks between them.
@@ -55,7 +54,7 @@ namespace AForge.Imaging
         /// 
         /// <returns>Returns list of found block matches.</returns>
         /// 
-        List<BlockMatch> ProcessImage( BitmapData sourceImageData, List<IntPoint> coordinates, BitmapData searchImageData );
+        List<BlockMatch> ProcessImage(BitmapData sourceImageData, List<IntPoint> coordinates, BitmapData searchImageData);
 
         /// <summary>
         /// Process images matching blocks between them.
@@ -67,6 +66,6 @@ namespace AForge.Imaging
         /// 
         /// <returns>Returns list of found block matches.</returns>
         /// 
-        List<BlockMatch> ProcessImage( UnmanagedImage sourceImage, List<IntPoint> coordinates, UnmanagedImage searchImage );
+        List<BlockMatch> ProcessImage(UnmanagedImage sourceImage, List<IntPoint> coordinates, UnmanagedImage searchImage);
     }
 }

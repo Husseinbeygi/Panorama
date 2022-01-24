@@ -7,9 +7,7 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
     using System.Collections.Generic;
-    using System.Drawing;
     using System.Drawing.Imaging;
 
     /// <summary>
@@ -45,11 +43,11 @@ namespace AForge.Imaging.Filters
     /// 
     public class BottomHat : BaseInPlaceFilter
     {
-        private Closing closing = new Closing( );
-        private Subtract subtract = new Subtract( );
+        private Closing closing = new Closing();
+        private Subtract subtract = new Subtract();
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -63,7 +61,7 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="BottomHat"/> class.
         /// </summary>
         /// 
-        public BottomHat( )
+        public BottomHat()
         {
             // initialize format translation dictionary
             formatTranslations[PixelFormat.Format8bppIndexed]    = PixelFormat.Format8bppIndexed;
@@ -78,9 +76,9 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="se">Structuring element to pass to <see cref="Closing"/> operator.</param>
         /// 
-        public BottomHat( short[,] se ) : this( )
+        public BottomHat(short[,] se) : this()
         {
-            closing = new Closing( se );
+            closing = new Closing(se);
         }
 
         /// <summary>
@@ -89,17 +87,17 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="image">Source image data.</param>
         ///
-        protected override unsafe void ProcessFilter( UnmanagedImage image )
+        protected override unsafe void ProcessFilter(UnmanagedImage image)
         {
             // copy source image
-            UnmanagedImage sourceImage = image.Clone( );
+            UnmanagedImage sourceImage = image.Clone();
             // perform closing on the source image
-            closing.ApplyInPlace( image );
+            closing.ApplyInPlace(image);
             // subtract source image from the closed image
             subtract.UnmanagedOverlayImage = sourceImage;
-            subtract.ApplyInPlace( image );
+            subtract.ApplyInPlace(image);
 
-            sourceImage.Dispose( );
+            sourceImage.Dispose();
         }
     }
 }

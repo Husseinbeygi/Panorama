@@ -8,7 +8,6 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
@@ -50,10 +49,10 @@ namespace AForge.Imaging.Filters
     ///
     public class BlobsFiltering : BaseInPlaceFilter
     {
-        private BlobCounter blobCounter = new BlobCounter( );
+        private BlobCounter blobCounter = new BlobCounter();
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -62,7 +61,7 @@ namespace AForge.Imaging.Filters
         {
             get { return formatTranslations; }
         }
-        
+
         /// <summary>
         /// Specifies if size filetering should be coupled or not.
         /// </summary>
@@ -133,7 +132,7 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="BlobsFiltering"/> class.
         /// </summary>
         /// 
-        public BlobsFiltering( )
+        public BlobsFiltering()
         {
             blobCounter.FilterBlobs = true;
             blobCounter.MinWidth    = 1;
@@ -146,7 +145,7 @@ namespace AForge.Imaging.Filters
             formatTranslations[PixelFormat.Format32bppArgb] = PixelFormat.Format32bppArgb;
             formatTranslations[PixelFormat.Format32bppPArgb] = PixelFormat.Format32bppPArgb;
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="BlobsFiltering"/> class.
         /// </summary>
@@ -159,8 +158,8 @@ namespace AForge.Imaging.Filters
         /// <remarks>This constructor creates an instance of <see cref="BlobsFiltering"/> class
         /// with <see cref="CoupledSizeFiltering"/> property set to <b>false</b>.</remarks>
         /// 
-        public BlobsFiltering( int minWidth, int minHeight, int maxWidth, int maxHeight )
-            : this( minWidth, minHeight, maxWidth, maxHeight, false ) { }
+        public BlobsFiltering(int minWidth, int minHeight, int maxWidth, int maxHeight)
+            : this(minWidth, minHeight, maxWidth, maxHeight, false) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BlobsFiltering"/> class.
@@ -176,8 +175,8 @@ namespace AForge.Imaging.Filters
         /// <see cref="BlobCounterBase.CoupledSizeFiltering"/> property of <see cref="BlobCounterBase"/>
         /// class.</para></remarks>
         /// 
-        public BlobsFiltering( int minWidth, int minHeight, int maxWidth, int maxHeight, bool coupledSizeFiltering )
-            : this( )
+        public BlobsFiltering(int minWidth, int minHeight, int maxWidth, int maxHeight, bool coupledSizeFiltering)
+            : this()
         {
             blobCounter.MinWidth  = minWidth;
             blobCounter.MinHeight = minHeight;
@@ -193,7 +192,7 @@ namespace AForge.Imaging.Filters
         /// <param name="blobsFilter">Custom blobs' filtering routine to use
         /// (see <see cref="BlobCounterBase.BlobsFilter"/>).</param>
         ///
-        public BlobsFiltering( IBlobsFilter blobsFilter ) : this( )
+        public BlobsFiltering(IBlobsFilter blobsFilter) : this()
         {
             blobCounter.BlobsFilter = blobsFilter;
         }
@@ -204,28 +203,28 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="image">Source image data.</param>
         ///
-        protected override unsafe void ProcessFilter( UnmanagedImage image )
+        protected override unsafe void ProcessFilter(UnmanagedImage image)
         {
             // use blob counter to build objects map and filter them
-            blobCounter.ProcessImage( image );
+            blobCounter.ProcessImage(image);
             int[] objectsMap = blobCounter.ObjectLabels;
 
             // get image width and height
-            int width  = image.Width;
+            int width = image.Width;
             int height = image.Height;
 
             // do the job
-            byte* ptr = (byte*) image.ImageData.ToPointer( );
+            byte* ptr = (byte*)image.ImageData.ToPointer();
 
-            if ( image.PixelFormat == PixelFormat.Format8bppIndexed )
+            if (image.PixelFormat == PixelFormat.Format8bppIndexed)
             {
                 int offset = image.Stride - width;
 
-                for ( int y = 0, p = 0; y < height; y++ )
+                for (int y = 0, p = 0; y < height; y++)
                 {
-                    for ( int x = 0; x < width; x++, ptr++, p++ )
+                    for (int x = 0; x < width; x++, ptr++, p++)
                     {
-                        if ( objectsMap[p] == 0 )
+                        if (objectsMap[p] == 0)
                         {
                             *ptr = 0;
                         }
@@ -235,14 +234,14 @@ namespace AForge.Imaging.Filters
             }
             else
             {
-                int pixelSize = Bitmap.GetPixelFormatSize( image.PixelFormat ) / 8;
+                int pixelSize = Bitmap.GetPixelFormatSize(image.PixelFormat) / 8;
                 int offset = image.Stride - width * pixelSize;
 
-                for ( int y = 0, p = 0; y < height; y++ )
+                for (int y = 0, p = 0; y < height; y++)
                 {
-                    for ( int x = 0; x < width; x++, ptr += pixelSize, p++ )
+                    for (int x = 0; x < width; x++, ptr += pixelSize, p++)
                     {
-                        if ( objectsMap[p] == 0 )
+                        if (objectsMap[p] == 0)
                         {
                             ptr[RGB.R] = ptr[RGB.G] = ptr[RGB.B] = 0;
                         }

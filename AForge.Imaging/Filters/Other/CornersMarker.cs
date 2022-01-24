@@ -8,7 +8,6 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
@@ -47,7 +46,7 @@ namespace AForge.Imaging.Filters
         private ICornersDetector detector = null;
 
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -81,7 +80,7 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="detector">Interface of corners' detection algorithm.</param>
         /// 
-        public CornersMarker( ICornersDetector detector ) : this( detector, Color.White )
+        public CornersMarker(ICornersDetector detector) : this(detector, Color.White)
         {
         }
 
@@ -92,7 +91,7 @@ namespace AForge.Imaging.Filters
         /// <param name="detector">Interface of corners' detection algorithm.</param>
         /// <param name="markerColor">Marker's color used to mark corner.</param>
         /// 
-        public CornersMarker( ICornersDetector detector, Color markerColor )
+        public CornersMarker(ICornersDetector detector, Color markerColor)
         {
             this.detector    = detector;
             this.markerColor = markerColor;
@@ -109,14 +108,14 @@ namespace AForge.Imaging.Filters
         /// 
         /// <param name="image">Source image data.</param>
         ///
-        protected override unsafe void ProcessFilter( UnmanagedImage image )
+        protected override unsafe void ProcessFilter(UnmanagedImage image)
         {
             // get collection of corners
-            List<IntPoint> corners = detector.ProcessImage( image );
+            List<IntPoint> corners = detector.ProcessImage(image);
             // mark all corners
-            foreach ( IntPoint corner in corners )
+            foreach (IntPoint corner in corners)
             {
-                Drawing.FillRectangle( image, new Rectangle( corner.X - 1, corner.Y - 1, 3, 3 ), markerColor );
+                Drawing.FillRectangle(image, new Rectangle(corner.X - 1, corner.Y - 1, 3, 3), markerColor);
             }
         }
     }

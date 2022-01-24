@@ -8,7 +8,6 @@
 
 namespace AForge.Imaging
 {
-    using System;
     using System.Drawing;
 
     /// <summary>
@@ -44,7 +43,7 @@ namespace AForge.Imaging
         /// <param name="rect">Rectangle of the matching area.</param>
         /// <param name="similarity">Similarity between template and found matching, [0..1].</param>
         /// 
-        public TemplateMatch( Rectangle rect, float similarity )
+        public TemplateMatch(Rectangle rect, float similarity)
         {
             this.rect = rect;
             this.similarity = similarity;

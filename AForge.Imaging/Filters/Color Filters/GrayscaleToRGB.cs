@@ -7,9 +7,7 @@
 
 namespace AForge.Imaging.Filters
 {
-    using System;
     using System.Collections.Generic;
-    using System.Drawing;
     using System.Drawing.Imaging;
 
     /// <summary>
@@ -35,7 +33,7 @@ namespace AForge.Imaging.Filters
     public sealed class GrayscaleToRGB : BaseFilter
     {
         // private format translation dictionary
-        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>( );
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
         /// <summary>
         /// Format translations dictionary.
@@ -49,7 +47,7 @@ namespace AForge.Imaging.Filters
         /// Initializes a new instance of the <see cref="GrayscaleToRGB"/> class.
         /// </summary>
         /// 
-        public GrayscaleToRGB( )
+        public GrayscaleToRGB()
         {
             // initialize format translation dictionary
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format24bppRgb;
@@ -62,7 +60,7 @@ namespace AForge.Imaging.Filters
         /// <param name="sourceData">Source image data.</param>
         /// <param name="destinationData">Destination image data.</param>
         /// 
-        protected override unsafe void ProcessFilter( UnmanagedImage sourceData, UnmanagedImage destinationData )
+        protected override unsafe void ProcessFilter(UnmanagedImage sourceData, UnmanagedImage destinationData)
         {
             // get width and height
             int width = sourceData.Width;
@@ -72,14 +70,14 @@ namespace AForge.Imaging.Filters
             int dstOffset = destinationData.Stride - width * 3;
 
             // do the job
-            byte * src = (byte*) sourceData.ImageData.ToPointer( );
-            byte * dst = (byte*) destinationData.ImageData.ToPointer( );
+            byte* src = (byte*)sourceData.ImageData.ToPointer();
+            byte* dst = (byte*)destinationData.ImageData.ToPointer();
 
             // for each line
-            for ( int y = 0; y < height; y++ )
+            for (int y = 0; y < height; y++)
             {
                 // for each pixel
-                for ( int x = 0; x < width; x++, src++, dst += 3 )
+                for (int x = 0; x < width; x++, src++, dst += 3)
                 {
                     dst[RGB.R] = dst[RGB.G] = dst[RGB.B] = *src;
                 }
