@@ -5,7 +5,7 @@ namespace PanoramaFunctions
 {
     public class Image
     {
-        public Bitmap Create(Bitmap img1, Bitmap img2)
+        private Bitmap Create(Bitmap img1, Bitmap img2)
         {
             var haris_image_1 = HarrisDetector.Detect(img1);
             var haris_image_2 = HarrisDetector.Detect(img2);
