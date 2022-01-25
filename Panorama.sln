@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Accord.MachineLearning", "A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Accord.Statistics", "Accord.Statistics\Accord.Statistics.csproj", "{AEC70C0C-AC90-41F5-9540-924410D29E8A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanoramaApp", "PanoramaApp\PanoramaApp.csproj", "{BA6DFAE0-606E-40F2-B5BD-A3ADD86D49F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{AEC70C0C-AC90-41F5-9540-924410D29E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEC70C0C-AC90-41F5-9540-924410D29E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEC70C0C-AC90-41F5-9540-924410D29E8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA6DFAE0-606E-40F2-B5BD-A3ADD86D49F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA6DFAE0-606E-40F2-B5BD-A3ADD86D49F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA6DFAE0-606E-40F2-B5BD-A3ADD86D49F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA6DFAE0-606E-40F2-B5BD-A3ADD86D49F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
