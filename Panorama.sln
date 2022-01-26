@@ -3,25 +3,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanoramaFunctions", "PanoramaFunctions\PanoramaFunctions.csproj", "{1B10E998-8E73-437E-96A5-09222E3CB98F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PanoramaFunctions", "PanoramaFunctions\PanoramaFunctions.csproj", "{1B10E998-8E73-437E-96A5-09222E3CB98F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AForge", "AForge", "{49584D60-70DC-49A1-B714-0076E121021B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AForge.Math", "AForge.Math\AForge.Math.csproj", "{3E2641F0-81C6-4450-BC2C-CF3DB1404097}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AForge.Math", "AForge.Math\AForge.Math.csproj", "{3E2641F0-81C6-4450-BC2C-CF3DB1404097}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AForge.Core", "AForge.Core\AForge.Core.csproj", "{9E9F1244-DA51-4F18-B643-D6FA7D7715DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AForge.Core", "AForge.Core\AForge.Core.csproj", "{9E9F1244-DA51-4F18-B643-D6FA7D7715DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AForge.Imaging", "AForge.Imaging\AForge.Imaging.csproj", "{8F5FF2B3-8D97-4289-8B99-262134F2E7D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AForge.Imaging", "AForge.Imaging\AForge.Imaging.csproj", "{8F5FF2B3-8D97-4289-8B99-262134F2E7D9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Accord", "Accord", "{1A9FA965-29E4-492F-A0C5-7D5607C8474F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Accord.Imaging", "Accord.Imaging\Accord.Imaging.csproj", "{8B5FAC13-FEB1-4C82-BD07-A5741064348A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Accord.Imaging", "Accord.Imaging\Accord.Imaging.csproj", "{8B5FAC13-FEB1-4C82-BD07-A5741064348A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Accord.Math", "Accord.Math\Accord.Math.csproj", "{B915816F-B3A0-4DEC-ACA4-B3D0318FBB5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Accord.Math", "Accord.Math\Accord.Math.csproj", "{B915816F-B3A0-4DEC-ACA4-B3D0318FBB5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Accord.MachineLearning", "Accord.MachineLearning\Accord.MachineLearning.csproj", "{B4FEF4F5-71BC-465A-B7A3-6007395C0EDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Accord.MachineLearning", "Accord.MachineLearning\Accord.MachineLearning.csproj", "{B4FEF4F5-71BC-465A-B7A3-6007395C0EDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Accord.Statistics", "Accord.Statistics\Accord.Statistics.csproj", "{AEC70C0C-AC90-41F5-9540-924410D29E8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Accord.Statistics", "Accord.Statistics\Accord.Statistics.csproj", "{AEC70C0C-AC90-41F5-9540-924410D29E8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanoramaApp", "PanoramaApp\PanoramaApp.csproj", "{3E3F74F3-7E0B-4387-B35E-E28895F8D50E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,10 @@ Global
 		{AEC70C0C-AC90-41F5-9540-924410D29E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEC70C0C-AC90-41F5-9540-924410D29E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEC70C0C-AC90-41F5-9540-924410D29E8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E3F74F3-7E0B-4387-B35E-E28895F8D50E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E3F74F3-7E0B-4387-B35E-E28895F8D50E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E3F74F3-7E0B-4387-B35E-E28895F8D50E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E3F74F3-7E0B-4387-B35E-E28895F8D50E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
